@@ -1,0 +1,39 @@
+{
+  "name": "style-doctor",
+  "version": "0.1.0",
+  "description": "Diagnose prose health the way react-doctor diagnoses a React codebase: grouped findings, a 0-100 score, CI-ready exit codes, JSON for agents.",
+  "type": "module",
+  "bin": {
+    "style-doctor": "cli.js"
+  },
+  "exports": "./cli.js",
+  "files": [
+    "cli.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Andrea Bruno (https://github.com/baronunread)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baronunread/style-doctor.git"
+  },
+  "homepage": "https://github.com/baronunread/style-doctor#readme",
+  "bugs": "https://github.com/baronunread/style-doctor/issues",
+  "scripts": {
+    "test": "node cli.js --selftest"
+  },
+  "keywords": [
+    "prose",
+    "lint",
+    "linter",
+    "style",
+    "writing",
+    "editor",
+    "llm",
+    "ai",
+    "cliche",
+    "slop"
+  ],
+  "license": "MIT"
+}
