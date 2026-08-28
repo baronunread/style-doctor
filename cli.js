@@ -12,9 +12,10 @@
  *   npx style-doctor --scope changed # only files changed vs git HEAD
  *   npx style-doctor --blocking warning   # warnings fail CI too
  */
-import { readFileSync, globSync, statSync } from "node:fs";
+import { readFileSync, globSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { basename, resolve, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const VERSION = "0.1.0";
 const PLUGIN = "style-doctor";
@@ -506,4 +507,15 @@ function main() {
 
 export { buildReport, findInText, stripNonProse, scoreLabel, RULES };
 
-if (import.meta.url === `file://${process.argv[1]}`) process.exit(main());
+// Run as a CLI when invoked directly. `import.meta.url === file://${argv[1]}`
+// breaks under npx/bunx (the bin is a symlink shim), so resolve real paths.
+function isEntrypoint() {
+  if (typeof import.meta.main === "boolean") return import.meta.main; // Bun, Node >=24.2
+  if (!process.argv[1]) return false;
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+if (isEntrypoint()) process.exit(main());
