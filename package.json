@@ -1,6 +1,6 @@
 {
   "name": "style-doctor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Diagnose prose health the way react-doctor diagnoses a React codebase: grouped findings, a 0-100 score, CI-ready exit codes, JSON for agents.",
   "type": "module",
   "bin": {

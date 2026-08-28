@@ -17,7 +17,7 @@ import { execFileSync } from "node:child_process";
 import { basename, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 const PLUGIN = "style-doctor";
 const K = 4.0; // score = 100 - K * (weighted findings per 100 words)
 const WEIGHT = { error: 3, warning: 1 };
