@@ -2,7 +2,7 @@
 
 `react-doctor` for prose. Point it at a folder of Markdown/text; it scans,
 groups findings by rule, prints a **0–100 score**, and **exits non-zero when
-blocking issues are present** — so it drops straight into CI. Single file, zero
+blocking issues are present**, so it drops straight into CI. Single file, zero
 dependencies, Node ≥18.
 
 It looks for LLM tells (`delve`, `rich tapestry`, `not just X, but Y`, em-dash
@@ -46,7 +46,7 @@ LLM Tells: 6 errors
   on error-severity findings; `--blocking warning` blocks on any; `--blocking none`
   is advisory-only.
 - **`--scope changed`** limits the scan to files changed vs `git HEAD` (`--base <ref>`
-  to compare against a PR base) — fast pre-commit / PR checks.
+  to compare against a PR base). Fast pre-commit / PR checks.
 - **`--min <n>`** also fails if the score drops below `n`.
 - **`--quiet`** drops the guidance header and footer.
 - **`--score`** prints just the number.
@@ -79,11 +79,11 @@ scan → apply `help` at each `line:col` → re-scan until `ok` / your `--min`.
 
 ## Options
 
-`--category "LLM Tells"|Filler|Grammar` (repeatable, display filter — score stays
+`--category "LLM Tells"|Filler|Grammar` (repeatable, display filter; score stays
 global) · `--no-warnings` · `--only a,b` · `--ignore a,b` · `--no-color` /
 `NO_COLOR` · `--rules` · `--selftest`.
 
-Use it as a library too: `import { buildReport } from "style-doctor"` —
+Use it as a library too: `import { buildReport } from "style-doctor"`, then
 `buildReport(dir, opts)` returns the same object as `--json`.
 
 ## Scoring
@@ -95,20 +95,21 @@ else Critical.
 ## Prior art
 
 [Vale](https://vale.sh) and [proselint](https://github.com/amperser/proselint)
-are the established prose linters — richer engines, but no single score, no
+are the established prose linters, with richer engines, but no single score, no
 react-doctor-style grouped report, and setup to do. `style-doctor` trades
 breadth for one zero-config command tuned for LLM tells: scan → score → gate.
 
-Passive-voice detection is a naive regex (no POS tagger) — `--ignore
+Passive-voice detection is a naive regex (no POS tagger); pass `--ignore
 passive-voice` if it's noisy for reference docs.
 
 ## Credits
 
-The LLM-tell rules are inspired by Simon Willison's
+Simon Willison's
 [**llm-cliche-highlighter**](https://github.com/simonw/tools/blob/main/llm-cliche-highlighter.html)
-([tools.simonwillison.net](https://tools.simonwillison.net/llm-cliche-highlighter)) —
-a browser tool that highlights the words and constructions LLMs overuse. This
-project turns that idea into a scored, CI-friendly CLI. Thanks, Simon.
+([tools.simonwillison.net](https://tools.simonwillison.net/llm-cliche-highlighter))
+inspired the LLM-tell rules. It is a browser tool that highlights the words and
+constructions LLMs overuse; this project turns that idea into a scored,
+CI-friendly CLI. Thanks, Simon.
 
 The output format and CI ergonomics follow
 [react-doctor](https://github.com/millionco/react-doctor).
