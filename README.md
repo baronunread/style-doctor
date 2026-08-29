@@ -80,8 +80,19 @@ scan → apply `help` at each `line:col` → re-scan until `ok` / your `--min`.
 ## Options
 
 `--category "LLM Tells"|Filler|Grammar` (repeatable, display filter; score stays
-global) · `--no-warnings` · `--only a,b` · `--ignore a,b` · `--no-color` /
-`NO_COLOR` · `--rules` · `--selftest`.
+global) · `--no-warnings` · `--only a,b` · `--ignore a,b` · `--exclude a,b`
+(skip paths, globs) · `--no-color` / `NO_COLOR` · `--rules` · `--selftest`.
+
+Persistent config: a `.style-doctor.json` file, or a `"style-doctor"` key in
+`package.json`:
+
+```json
+{ "exclude": ["vendor/**", "CHANGELOG.md"], "ignore": ["passive-voice"] }
+```
+
+`exclude` skips paths (globs, matched at any depth: `**` spans directories, `*`
+stays in one segment); `ignore` skips rule ids. CLI `--exclude` / `--ignore` add
+to the config lists.
 
 Use it as a library too: `import { buildReport } from "style-doctor"`, then
 `buildReport(dir, opts)` returns the same object as `--json`.
