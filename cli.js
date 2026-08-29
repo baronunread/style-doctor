@@ -11,6 +11,11 @@
  *   npx style-doctor --score         # print only the score
  *   npx style-doctor --scope changed # only files changed vs git HEAD
  *   npx style-doctor --blocking warning   # warnings fail CI too
+ *   npx style-doctor --exclude "vendor/**,*.gen.md"  # skip paths (globs)
+ *
+ * Persistent config: a ".style-doctor.json" file, or a "style-doctor" key in
+ * package.json, with { "exclude": [globs], "ignore": [rule ids] }. CLI
+ * --exclude / --ignore add to whatever the config lists.
  */
 import { readFileSync, globSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -213,9 +218,48 @@ function diag(r, filePath, line, column, match) {
   };
 }
 
-function discover(dir) {
-  const EXCLUDE = /(^|\/)(node_modules|\.git|dist|build|out|vendor|coverage|\.next|\.cache)(\/|$)/;
-  return globSync("**/*.{md,markdown,mdx,txt}", { cwd: dir, exclude: (p) => EXCLUDE.test(p) })
+// minimal glob -> RegExp for path exclusion: ** spans directories, * stays
+// within a segment, ? is one non-slash char. Matches at any depth.
+function globToRe(glob) {
+  let re = "";
+  const g = glob.replace(/^\.\//, "");
+  for (let i = 0; i < g.length; i++) {
+    const ch = g[i];
+    if (ch === "*") {
+      if (g[i + 1] === "*") { re += ".*"; i++; if (g[i + 1] === "/") i++; }
+      else re += "[^/]*";
+    } else if (ch === "?") re += "[^/]";
+    else re += ch.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+  }
+  return new RegExp(`^(?:.*/)?(?:${re})(?:/.*)?$`, "i");
+}
+
+// (path) => bool: true if any user glob matches. Empty list matches nothing.
+function excludeMatcher(globs = []) {
+  const res = globs.map(globToRe);
+  return (p) => res.some((re) => re.test(p));
+}
+
+// .style-doctor.json, else the "style-doctor" key in package.json, else {}.
+function loadConfig(dir) {
+  const read = (p) => {
+    try { return JSON.parse(readFileSync(resolve(dir, p), "utf8")); }
+    catch { return null; }
+  };
+  const file = read(".style-doctor.json");
+  if (file) return file;
+  const pkg = read("package.json");
+  return (pkg && pkg["style-doctor"]) || {};
+}
+
+function discover(dir, exclude = []) {
+  // globSync's exclude callback sees path segments, not full paths, so it can
+  // only prune whole directories by name. User globs may have slashes, so match
+  // those against the full relative path after the walk.
+  const BUILTIN = /(^|\/)(node_modules|\.git|dist|build|out|vendor|coverage|\.next|\.cache)(\/|$)/;
+  const skip = excludeMatcher(exclude);
+  return globSync("**/*.{md,markdown,mdx,txt}", { cwd: dir, exclude: (p) => BUILTIN.test(p) })
+    .filter((p) => !skip(p))
     .sort();
 }
 
@@ -240,7 +284,11 @@ function scoreLabel(s) {
 
 function buildReport(dir, opts) {
   const started = Date.now();
-  let files = opts.files.length ? opts.files : discover(dir);
+  let files = opts.files.length ? opts.files : discover(dir, opts.exclude);
+  if (opts.files.length && opts.exclude?.length) {
+    const skip = excludeMatcher(opts.exclude);
+    files = files.filter((f) => !skip(relative(dir, resolve(dir, f))));
+  }
   if (opts.scope === "changed") {
     const ch = changedFiles(dir, opts.base);
     if (ch) files = files.filter((f) => ch.has(f) || ch.has(relative(dir, resolve(dir, f))));
@@ -384,7 +432,8 @@ Usage: style-doctor [options] [directory|files...]
   --blocking <level>    severity that fails CI: error (default) | warning | none
   --min <n>             also fail if score < n
   --no-color            disable ANSI color (also honors NO_COLOR)
-  --ignore a,b          skip these rule ids
+  --ignore a,b          skip these rule ids (adds to config "ignore")
+  --exclude a,b         skip these paths (globs; adds to config "exclude")
   --only a,b            run only these rule ids
   --rules               list rules and exit
   --selftest            run internal checks and exit
@@ -397,7 +446,7 @@ function parseArgs(argv) {
   const a = {
     files: [], dir: ".", json: false, jsonCompact: false, scoreOnly: false,
     quiet: false, scope: "full", base: null, category: null, noWarnings: false,
-    blocking: "error", min: null, only: null, ignore: null,
+    blocking: "error", min: null, only: null, ignore: null, exclude: [],
     colorOn: process.stdout.isTTY && !process.env.NO_COLOR,
   };
   const cats = [];
@@ -421,6 +470,7 @@ function parseArgs(argv) {
     else if (t === "--min") a.min = parseInt(argv[++i], 10);
     else if (t === "--only") a.only = new Set(argv[++i].split(","));
     else if (t === "--ignore") a.ignore = new Set(argv[++i].split(","));
+    else if (t === "--exclude") a.exclude.push(...argv[++i].split(","));
     else if (t.startsWith("-")) { console.error(`unknown option: ${t}`); process.exit(2); }
     else {
       try {
@@ -469,6 +519,12 @@ function selftest() {
   assert(scoreLabel(70) === "Needs work" && scoreLabel(48) === "Critical" &&
     scoreLabel(95) === "Excellent", "labels");
 
+  const exDir = excludeMatcher(["video-hf", "*.txt", "docs/**"]);
+  assert(exDir("video-hf/AGENTS.md") && exDir("a/b/notes.txt") &&
+    exDir("docs/deep/x.md"), "exclude matches");
+  assert(!exDir("README.md") && !exDir("videos/x.md") &&
+    !excludeMatcher([])("anything.md"), "exclude non-matches");
+
   const rep = buildReport(process.cwd(), {
     files: [], dir: ".", scope: "full", blocking: "error",
   });
@@ -492,9 +548,14 @@ function main() {
   if (!["full", "changed"].includes(a.scope)) { console.error("--scope must be full|changed"); return 2; }
   if (!["error", "warning", "none"].includes(a.blocking)) { console.error("--blocking must be error|warning|none"); return 2; }
 
+  const cfg = loadConfig(a.dir);
+  const exclude = [...(cfg.exclude || []), ...a.exclude];
+  const ignore = new Set([...(cfg.ignore || []), ...(a.ignore || [])]);
+
   const rep = buildReport(a.dir, {
     files: a.files, scope: a.scope, base: a.base, category: a.category,
-    noWarnings: a.noWarnings, blocking: a.blocking, only: a.only, ignore: a.ignore,
+    noWarnings: a.noWarnings, blocking: a.blocking, only: a.only,
+    ignore: ignore.size ? ignore : null, exclude,
   });
 
   if (a.scoreOnly) { console.log(rep.score); return 0; }
