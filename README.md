@@ -1,8 +1,9 @@
 # style-doctor
 
-`react-doctor` for prose. Point it at a folder of Markdown/text; it scans,
-groups findings by rule, prints a **0–100 score**, and **exits non-zero when
-blocking issues are present**, so it drops straight into CI. Single file, zero
+`react-doctor` for prose. Point it at a folder; it scans Markdown/text **and the
+prose inside `.astro` / JSX / `.html` / `.vue` / `.svelte` components**, groups
+findings by rule, prints a **0–100 score**, and **exits non-zero when blocking
+issues are present**, so it drops straight into CI. Single file, zero
 dependencies, Node ≥18.
 
 It looks for LLM tells (`delve`, `rich tapestry`, `not just X, but Y`, em-dash
@@ -15,7 +16,37 @@ wordy phrases, passive voice).
 npx style-doctor                  # scan ./
 npx style-doctor docs/            # scan a folder
 npx style-doctor CHANGELOG.md     # scan specific files
+extract-prose web/ | npx style-doctor -   # score prose piped on stdin
 ```
+
+## Templates & components
+
+style-doctor scans `.astro`, `.jsx`, `.tsx`, `.html`, `.htm`, `.vue`, and
+`.svelte` by default, alongside `.md/.markdown/.mdx/.txt`. A naive (no-AST)
+extractor pulls the linted prose out of each file:
+
+- text nodes between tags,
+- `alt`, `aria-label`, `title`, `placeholder` attribute values,
+- `<meta name="description" content="…">` and the like.
+
+It skips frontmatter, `<script>` / `<style>` blocks, `{…}` expressions, and any
+line that reads as code, not a sentence (identifiers, paths, class lists).
+`--no-templates` turns it off and scans Markdown/text only.
+
+It is a regex, not a compiler: a stray `<` in prose or an exotic JSX shape can
+throw it off. For full control, pipe your own extraction in:
+
+```
+# a commit message
+git log -1 --format=%B | npx style-doctor -
+
+# gate a PR's added lines
+git diff origin/main... | grep '^+' | cut -c2- | npx style-doctor - --stdin-name diff
+```
+
+`-` reads prose from stdin; `--stdin-name <label>` sets the `filePath` reported
+for those findings (default `<stdin>`). Combine stdin with file/dir args and
+everything merges into one score.
 
 Output mirrors react-doctor: an agent-guidance header, `Scanned N files`, a
 score line, a per-category issue count, then grouped findings
@@ -60,7 +91,7 @@ npx style-doctor --json-compact  # same, one line
 
 ```json
 {
-  "schemaVersion": 1, "tool": "style-doctor", "version": "0.2.0",
+  "schemaVersion": 1, "tool": "style-doctor", "version": "0.3.0",
   "ok": false, "score": 78, "label": "Needs work", "words": 640,
   "summary": { "issues": 6, "errors": 6, "warnings": 0, "filesWithIssues": 1,
                "byCategory": { "LLM Tells": { "errors": 6, "warnings": 0 } } },
@@ -81,7 +112,8 @@ scan → apply `help` at each `line:col` → re-scan until `ok` / your `--min`.
 
 `--category "LLM Tells"|Filler|Grammar` (repeatable, display filter; score stays
 global) · `--no-warnings` · `--only a,b` · `--ignore a,b` · `--exclude a,b`
-(skip paths, globs) · `--no-color` / `NO_COLOR` · `--rules` · `--selftest`.
+(skip paths, globs) · `--no-templates` · `-` (read stdin) · `--stdin-name
+<label>` · `--no-color` / `NO_COLOR` · `--rules` · `--selftest`.
 
 Persistent config: a `.style-doctor.json` file, or a `"style-doctor"` key in
 `package.json`:
@@ -124,6 +156,10 @@ CI-friendly CLI. Thanks, Simon.
 
 The output format and CI ergonomics follow
 [react-doctor](https://github.com/millionco/react-doctor).
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
 
 ## License
 

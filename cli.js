@@ -7,6 +7,7 @@
  *
  *   npx style-doctor                 # scan ./
  *   npx style-doctor docs/           # scan a folder
+ *   extract-prose web/ | npx style-doctor -   # score prose piped on stdin
  *   npx style-doctor --json          # structured report (suppresses other output)
  *   npx style-doctor --score         # print only the score
  *   npx style-doctor --scope changed # only files changed vs git HEAD
@@ -22,7 +23,7 @@ import { execFileSync } from "node:child_process";
 import { basename, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 const PLUGIN = "style-doctor";
 const K = 4.0; // score = 100 - K * (weighted findings per 100 words)
 const WEIGHT = { error: 3, warning: 1 };
@@ -185,9 +186,68 @@ function stripNonProse(text) {
   });
 }
 
-function findInText(text, filePath, { only, ignore }) {
+const sp = (s) => s.replace(/[^\n]/g, " ");
+const TEMPLATE_EXT = /\.(?:astro|jsx|tsx|html?|vue|svelte)$/i;
+
+// Naive prose extractor for template/component files: no AST. It ALLOWLISTS
+// what to lint (JSX/HTML text nodes + prose attribute values) and blanks the
+// rest length-preservingly, so findInText's line/column offsets stay valid.
+// An allowlist beats blanking-out-code here: JSX text sits between `) {` and
+// its closing `}`, so any brace-based stripping eats the prose with it.
+// ponytail: regex, not a parser. Swap in acorn-jsx / the astro compiler only
+// if the false-positive rate proves too high in practice.
+const PROSE_ATTR = /\b(alt|aria-label|title|placeholder|content)\s*=\s*(["'])([\s\S]*?)\2/gi;
+
+function stripTemplate(text) {
+  // Blank <script>/<style> bodies first: their JS holds < and > that would
+  // read as tags. Keep the line count.
+  let block = false;
+  let s = text.split(/\r?\n/).map((line) => {
+    if (block) { if (/<\/(?:script|style)>/i.test(line)) block = false; return sp(line); }
+    if (/<(?:script|style)[\s>]/i.test(line)) {
+      if (!/<\/(?:script|style)>/i.test(line)) block = true;
+      return sp(line);
+    }
+    return line;
+  }).join("\n");
+  s = s.replace(/&[a-z#0-9]+;/gi, sp); // html entities -> spaces
+
+  const keep = new Uint8Array(s.length);
+  const mark = (start, len) => { for (let i = start; i < start + len; i++) keep[i] = 1; };
+  for (const m of s.matchAll(/>([^<>{}]+)</g)) mark(m.index + 1, m[1].length); // text nodes
+  for (const m of s.matchAll(PROSE_ATTR)) {
+    if (m[1].toLowerCase() === "content" &&
+        !/\b(?:name|property)\s*=\s*["'][a-z:]*description["']/i
+          .test(s.slice(Math.max(0, m.index - 120), m.index)))
+      continue;
+    mark(m.index + m[0].length - m[3].length - 1, m[3].length);
+  }
+  let out = "";
+  for (let i = 0; i < s.length; i++)
+    out += keep[i] ? s[i] : (s[i] === "\n" ? "\n" : " ");
+
+  return out.split("\n").map((line) => (proseLine(line) ? line : sp(line)));
+}
+
+// Does this line read like a sentence, not code? Filters identifiers, paths,
+// class lists, and lone labels that survive tag blanking.
+function proseLine(line) {
+  const t = line.trim();
+  if (t.length < 12 || !/\s/.test(t)) return false;
+  const words = t.split(/\s+/).filter((w) => /^[A-Za-z][A-Za-z'’-]*$/.test(w));
+  if (words.length < 3) return false;
+  if (/[/\\{}<>|=]|::|\$\(|=>/.test(t) && words.length < 8) return false;
+  return true;
+}
+
+const toProse = (text, filePath) =>
+  (TEMPLATE_EXT.test(filePath) ? stripTemplate : stripNonProse)(text);
+
+function findInText(text, filePath, { only, ignore, plain }) {
   const out = [];
-  const prose = stripNonProse(text);
+  // `plain` (stdin): caller already extracted the prose; don't re-run a
+  // template extractor over it just because the label ends in .astro.
+  const prose = plain ? stripNonProse(text) : toProse(text, filePath);
   prose.forEach((line, i) => {
     for (const r of COMPILED) {
       if (!r.re) continue;
@@ -252,13 +312,17 @@ function loadConfig(dir) {
   return (pkg && pkg["style-doctor"]) || {};
 }
 
-function discover(dir, exclude = []) {
+const MD_GLOB = "md,markdown,mdx,txt";
+const TEMPLATE_GLOB = "astro,jsx,tsx,html,htm,vue,svelte";
+
+function discover(dir, exclude = [], noTemplates = false) {
   // globSync's exclude callback sees path segments, not full paths, so it can
   // only prune whole directories by name. User globs may have slashes, so match
   // those against the full relative path after the walk.
   const BUILTIN = /(^|\/)(node_modules|\.git|dist|build|out|vendor|coverage|\.next|\.cache)(\/|$)/;
   const skip = excludeMatcher(exclude);
-  return globSync("**/*.{md,markdown,mdx,txt}", { cwd: dir, exclude: (p) => BUILTIN.test(p) })
+  const glob = `**/*.{${noTemplates ? MD_GLOB : `${MD_GLOB},${TEMPLATE_GLOB}`}}`;
+  return globSync(glob, { cwd: dir, exclude: (p) => BUILTIN.test(p) })
     .filter((p) => !skip(p))
     .sort();
 }
@@ -284,7 +348,8 @@ function scoreLabel(s) {
 
 function buildReport(dir, opts) {
   const started = Date.now();
-  let files = opts.files.length ? opts.files : discover(dir, opts.exclude);
+  let files = opts.files.length ? opts.files
+    : opts.stdin ? [] : discover(dir, opts.exclude, opts.noTemplates);
   if (opts.files.length && opts.exclude?.length) {
     const skip = excludeMatcher(opts.exclude);
     files = files.filter((f) => !skip(relative(dir, resolve(dir, f))));
@@ -301,6 +366,11 @@ function buildReport(dir, opts) {
     try { text = readFileSync(resolve(dir, f), "utf8"); }
     catch { continue; }
     const res = findInText(text, f, opts);
+    diagnostics.push(...res.diagnostics);
+    totalWords += res.words;
+  }
+  if (opts.stdin && opts.stdinText != null) {
+    const res = findInText(opts.stdinText, opts.stdinName || "<stdin>", { ...opts, plain: true });
     diagnostics.push(...res.diagnostics);
     totalWords += res.words;
   }
@@ -330,7 +400,7 @@ function buildReport(dir, opts) {
       : opts.blocking === "warning" ? shown.length === 0 : errors === 0,
     score, label: scoreLabel(score), words,
     summary: { issues: shown.length, errors, warnings, filesWithIssues, byCategory },
-    scannedFileCount: files.length,
+    scannedFileCount: files.length + (opts.stdin ? 1 : 0),
     elapsedMilliseconds: Date.now() - started,
     diagnostics: shown,
   };
@@ -419,8 +489,13 @@ function formatHuman(rep, { quiet, colorOn }) {
 
 const HELP = `style-doctor ${VERSION} - diagnose prose health (react-doctor for writing)
 
-Usage: style-doctor [options] [directory|files...]
+Usage: style-doctor [options] [directory|files... | -]
 
+  -                     read prose to scan from stdin (pipe in extracted
+                        component/template text, a commit message, etc.)
+  --stdin-name <label>  filePath to report for stdin findings (default: <stdin>)
+  --no-templates        scan only .md/.markdown/.mdx/.txt; skip .astro/.jsx/.tsx/
+                        .html/.vue/.svelte (which are scanned by default)
   --json                structured JSON report (suppresses other output)
   --json-compact        with --json, no indentation
   --score               print only the score number
@@ -447,6 +522,7 @@ function parseArgs(argv) {
     files: [], dir: ".", json: false, jsonCompact: false, scoreOnly: false,
     quiet: false, scope: "full", base: null, category: null, noWarnings: false,
     blocking: "error", min: null, only: null, ignore: null, exclude: [],
+    stdin: false, stdinName: null, noTemplates: false,
     colorOn: process.stdout.isTTY && !process.env.NO_COLOR,
   };
   const cats = [];
@@ -471,6 +547,9 @@ function parseArgs(argv) {
     else if (t === "--only") a.only = new Set(argv[++i].split(","));
     else if (t === "--ignore") a.ignore = new Set(argv[++i].split(","));
     else if (t === "--exclude") a.exclude.push(...argv[++i].split(","));
+    else if (t === "--stdin-name") a.stdinName = argv[++i];
+    else if (t === "--no-templates") a.noTemplates = true;
+    else if (t === "-") a.stdin = true;
     else if (t.startsWith("-")) { console.error(`unknown option: ${t}`); process.exit(2); }
     else {
       try {
@@ -519,11 +598,35 @@ function selftest() {
   assert(scoreLabel(70) === "Needs work" && scoreLabel(48) === "Critical" &&
     scoreLabel(95) === "Excellent", "labels");
 
+  // template extraction: prose from text nodes + alt/meta, code left alone
+  const astro = findInText(
+    "---\nconst blurb = 'we must delve into it';\n---\n" +          // frontmatter: skipped
+    "<h1>This stands as a testament to seamless, robust design.</h1>\n" +  // line 4
+    "<img alt=\"It's important to note the boat sails well\" src=\"/b.png\" />\n" + // line 5
+    "<a href=\"/docs\" class=\"btn-primary lg\">{label}</a>\n" +     // line 6: no prose
+    "<meta name=\"description\" content=\"We delve into a rich tapestry of things\" />\n", // line 7
+    "Hero.astro", {});
+  const aIds = new Set(astro.diagnostics.map((d) => d.rule));
+  for (const id of ["testament", "seamless", "important-to-note", "delve", "tapestry"])
+    assert(aIds.has(id), `astro extract missing ${id}: ${[...aIds]}`);
+  assert(!astro.diagnostics.some((d) => d.line <= 3), "frontmatter/code scanned");
+  assert(!astro.diagnostics.some((d) => d.line === 6), "code-only line scanned");
+  assert(findInText("const delveInto = useDelve();\n", "x.tsx", {}).diagnostics.length === 0,
+    "tsx identifier linted");
+
   const exDir = excludeMatcher(["video-hf", "*.txt", "docs/**"]);
   assert(exDir("video-hf/AGENTS.md") && exDir("a/b/notes.txt") &&
     exDir("docs/deep/x.md"), "exclude matches");
   assert(!exDir("README.md") && !exDir("videos/x.md") &&
     !excludeMatcher([])("anything.md"), "exclude non-matches");
+
+  const piped = buildReport(process.cwd(), {
+    files: [], dir: ".", scope: "full", blocking: "error",
+    stdin: true, stdinText: "We must delve into the tapestry.", stdinName: "hero.astro",
+  });
+  assert(piped.scannedFileCount === 1 &&
+    piped.diagnostics.some((d) => d.rule === "delve" && d.filePath === "hero.astro"),
+    "stdin scan");
 
   const rep = buildReport(process.cwd(), {
     files: [], dir: ".", scope: "full", blocking: "error",
@@ -552,10 +655,17 @@ function main() {
   const exclude = [...(cfg.exclude || []), ...a.exclude];
   const ignore = new Set([...(cfg.ignore || []), ...(a.ignore || [])]);
 
+  let stdinText = null;
+  if (a.stdin) {
+    try { stdinText = readFileSync(0, "utf8"); }
+    catch { console.error("style-doctor: could not read stdin"); return 2; }
+  }
+
   const rep = buildReport(a.dir, {
     files: a.files, scope: a.scope, base: a.base, category: a.category,
     noWarnings: a.noWarnings, blocking: a.blocking, only: a.only,
     ignore: ignore.size ? ignore : null, exclude,
+    stdin: a.stdin, stdinText, stdinName: a.stdinName, noTemplates: a.noTemplates,
   });
 
   if (a.scoreOnly) { console.log(rep.score); return 0; }
