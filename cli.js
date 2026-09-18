@@ -23,11 +23,11 @@ import { execFileSync } from "node:child_process";
 import { basename, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.3.0";
+const VERSION = "0.4.0";
 const PLUGIN = "style-doctor";
 const K = 4.0; // score = 100 - K * (weighted findings per 100 words)
 const WEIGHT = { error: 3, warning: 1 };
-const CATEGORY_ORDER = ["LLM Tells", "Filler", "Grammar"];
+const CATEGORY_ORDER = ["LLM Tells", "AI Artifacts", "Filler", "Formatting", "Grammar"];
 
 // [id, severity, category, title, regexSource, message, help]
 const RULES = [
@@ -100,6 +100,42 @@ const RULES = [
     null, // doc-level, computed separately
     "A high em-dash rate is a common LLM tell.",
     "Replace some with periods or commas."],
+  ["superficial-ing", "warning", "LLM Tells", "Superficial-analysis \"-ing\" filler",
+    String.raw`\b(?:underscor(?:e|es|ing)|highlight(?:s|ing)?|showcas(?:e|es|ing)|foster(?:s|ing)?|emphasiz(?:e|es|ing))\b`,
+    "These \"-ing\" connectives gesture at analysis without adding any.",
+    "State the actual point instead."],
+  ["ai-vocab", "warning", "LLM Tells", "AI-vocabulary word",
+    String.raw`\b(?:garner(?:s|ed|ing)?|meticulous(?:ly)?|intricac(?:y|ies)|intricate|interplay|enduring|vibrant)\b`,
+    "This word shows up disproportionately in LLM output.",
+    "Use a plainer, more specific word."],
+  ["copula-avoidance", "warning", "LLM Tells", "\"Serves/stands as\" instead of \"is\"",
+    String.raw`\bserves? as\b|\bstands? as\b|\bfunctions? as\b|\bplays? an? (?:crucial|key|vital|pivotal) role\b`,
+    "Dressing up \"is\" as \"serves as\"/\"stands as\" is a common LLM avoidance tic.",
+    "Just use \"is\" or the plain verb."],
+  ["legacy-praise", "warning", "LLM Tells", "Vague legacy/location praise",
+    String.raw`\bin the heart of\b|\brich history\b|\bindelible mark\b`,
+    "This phrase is empty legacy/location praise.",
+    "Say the specific fact instead."],
+  ["vague-attribution", "warning", "LLM Tells", "Unsourced authority",
+    String.raw`\bindustry reports\b|\bexperts (?:argue|believe|agree)\b|\bstudies show\b|\bobservers have (?:cited|noted)\b`,
+    "This attributes a claim to an unnamed authority.",
+    "Cite the actual source or cut the claim."],
+  ["ai-artifact", "error", "AI Artifacts", "Leftover AI-generation artifact",
+    String.raw`\bas an ai language model\b|\bi hope this helps\b|\blet me know if you have (?:any )?questions\b|\b(?:certainly|of course)!|\boaicite\w*\b|\bcontentreference\b|\butm_source=chatgpt\.com\b|\bciteturn\d+\w*\b`,
+    "This is a chatbot sign-off or citation scrap left in from an unedited paste.",
+    "Remove it; it means the output was never read before publishing."],
+  ["title-case-heading", "warning", "Formatting", "Title Case Every Word heading",
+    String.raw`^#{1,6}\s+(?:[A-Z][A-Za-z'-]*\s+){2,}[A-Z][A-Za-z'-]*\s*$`,
+    "Capitalizing every word in a heading is an LLM formatting default.",
+    "Use sentence case."],
+  ["inline-bold-bullet", "warning", "Formatting", "\"**Label:** text\" bullet",
+    String.raw`^\s*[-*]\s*\*\*[^*\n]+:\*\*`,
+    "Bolded label-then-colon bullets are an LLM list default.",
+    "Write the point as a plain sentence, or drop the bold."],
+  ["bold-density", "warning", "Formatting", "Bold-text overuse",
+    null, // doc-level, computed separately
+    "Frequent bolding is a common LLM formatting tell.",
+    "Reserve bold for genuine emphasis; use fewer spans."],
   // --- Filler --------------------------------------------------------------
   ["important-to-note", "error", "Filler", "\"It's important to note\" filler",
     String.raw`\bit'?s (?:important|worth|essential|crucial) (?:to note|noting|to mention|mentioning)\b|\bit is important to note\b`,
@@ -149,6 +185,10 @@ const RULES = [
     String.raw`\b(?:very|really|quite|extremely|highly|somewhat|fairly|rather|actually|basically|essentially|arguably|clearly|obviously|simply|literally)\b`,
     "Hedge and intensifier words weaken the sentence.",
     "Cut it or be specific."],
+  ["hedge-stack", "warning", "Filler", "Stacked hedge / confidence-calibration opener",
+    String.raw`\bcould potentially\b|\bmay (?:well|eventually)\b|\bit'?s worth noting\b|\b(?:interestingly|notably),`,
+    "Stacked hedges, or flagging your own \"noteworthy\" aside, is LLM throat-clearing.",
+    "Pick one hedge, or state the fact plainly."],
   // --- Grammar ----------------------------------------------------------------
   ["passive-voice", "warning", "Grammar", "Possible passive voice",
     String.raw`\b(?:is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?` +
@@ -266,6 +306,12 @@ function findInText(text, filePath, { only, ignore, plain }) {
   if ((!only || only.has(r.id)) && !(ignore && ignore.has(r.id)) &&
       (dashes / words) * 100 > 1.0 && dashes >= 3) {
     out.push(diag(r, filePath, 1, 1, `${dashes} em-dashes in ${words} words`));
+  }
+  const bolds = (proseText.match(/\*\*[^*\n]+\*\*/g) || []).length;
+  const rb = BY_ID["bold-density"];
+  if ((!only || only.has(rb.id)) && !(ignore && ignore.has(rb.id)) &&
+      (bolds / words) * 100 > 2.0 && bolds >= 4) {
+    out.push(diag(rb, filePath, 1, 1, `${bolds} bolded spans in ${words} words`));
   }
   return { diagnostics: out, words };
 }
@@ -502,7 +548,7 @@ Usage: style-doctor [options] [directory|files... | -]
   --quiet               drop the agent-guidance header and footer
   --scope <full|changed>   changed = only files changed vs git base (default: full)
   --base <ref>          git base ref for --scope changed (default: HEAD)
-  --category <name>     only this category (repeatable): LLM Tells | Filler | Grammar
+  --category <name>     only this category (repeatable): LLM Tells | AI Artifacts | Filler | Formatting | Grammar
   --no-warnings         show error-severity findings only
   --blocking <level>    severity that fails CI: error (default) | warning | none
   --min <n>             also fail if score < n
@@ -570,7 +616,12 @@ const SLOP =
   "will unlock the potential of your workflow. It stands as a testament to " +
   "seamless, robust, cutting-edge design. When it comes to results, there is " +
   "a plethora of crucial benefits—truly—and at the end of the day, " +
-  "this leverages a myriad of paradigms—moreover it is essential.";
+  "this leverages a myriad of paradigms—moreover it is essential. " +
+  "Industry reports show experts believe this serves as a meticulous, intricate " +
+  "interplay that underscores enduring value, nestled in the heart of a vibrant " +
+  "landscape. It could potentially garner attention—interestingly, studies show " +
+  "observers have cited a rich history. I hope this helps! Let me know if you " +
+  "have questions.";
 const CLEAN =
   "The parser reads one line at a time and stops at the first error. " +
   "It handles files up to about ten megabytes without slowing down. " +
@@ -582,7 +633,9 @@ function selftest() {
 
   const slop = findInText(SLOP, "slop.md", {});
   const slopIds = new Set(slop.diagnostics.map((d) => d.rule));
-  for (const id of ["delve", "tapestry", "not-just-but", "testament"])
+  for (const id of ["delve", "tapestry", "not-just-but", "testament",
+    "superficial-ing", "ai-vocab", "copula-avoidance", "legacy-praise",
+    "vague-attribution", "hedge-stack", "ai-artifact"])
     assert(slopIds.has(id), `slop missing ${id}`);
   const slopWeight = slop.diagnostics.reduce((s, d) => s + WEIGHT[d.severity], 0);
   const slopScore = Math.max(0, Math.round(100 - (K * slopWeight * 100) / slop.words));
@@ -613,6 +666,15 @@ function selftest() {
   assert(!astro.diagnostics.some((d) => d.line === 6), "code-only line scanned");
   assert(findInText("const delveInto = useDelve();\n", "x.tsx", {}).diagnostics.length === 0,
     "tsx identifier linted");
+
+  const headings = findInText(
+    "## This Is A Title Case Heading\n" +
+    "- **Speed:** improved significantly\n" +
+    "**bold one** and **bold two** and **bold three** and **bold four**\n",
+    "heading.md", {});
+  const hIds = new Set(headings.diagnostics.map((d) => d.rule));
+  for (const id of ["title-case-heading", "inline-bold-bullet", "bold-density"])
+    assert(hIds.has(id), `heading test missing ${id}: ${[...hIds]}`);
 
   const exDir = excludeMatcher(["video-hf", "*.txt", "docs/**"]);
   assert(exDir("video-hf/AGENTS.md") && exDir("a/b/notes.txt") &&

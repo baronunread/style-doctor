@@ -4,6 +4,23 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [0.4.0] - 2026-09-18
+
+### Added
+
+- Ten new rules drawn from
+  [Wikipedia's Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
+  and the [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)
+  pattern list:
+  - LLM Tells: `superficial-ing`, `ai-vocab`, `copula-avoidance`,
+    `legacy-praise`, `vague-attribution`.
+  - Filler: `hedge-stack`.
+  - A new "AI Artifacts" category with `ai-artifact` (error severity):
+    chatbot sign-offs and leftover generation scraps such as `oaicite`,
+    `utm_source=chatgpt.com`, and `citeturn0search0`.
+  - A new "Formatting" category with `title-case-heading`,
+    `inline-bold-bullet`, and doc-level `bold-density`.
+
 ## [0.3.0] - 2026-09-03
 
 ### Added
@@ -46,6 +63,7 @@ This file lists all notable changes to the project. Format follows
 - Initial release: scan Markdown/text for LLM tells, filler, and naive grammar
   issues; 0-100 score; grouped findings; `--json`; CI exit codes.
 
+[0.4.0]: https://github.com/baronunread/style-doctor/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/baronunread/style-doctor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/baronunread/style-doctor/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/baronunread/style-doctor/compare/171b17a...v0.1.1
