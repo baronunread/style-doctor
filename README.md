@@ -7,8 +7,11 @@ issues are present**, so it drops straight into CI. Single file, zero
 dependencies, Node ≥18.
 
 It looks for LLM tells (`delve`, `rich tapestry`, `not just X, but Y`, em-dash
-overuse, `it's important to note`) and filler/grammar problems (weasel words,
-wordy phrases, passive voice).
+overuse, `it's important to note`, copula avoidance like `serves as`),
+leftover AI-generation artifacts (chatbot sign-offs, `oaicite`/`utm_source=
+chatgpt.com` citation scraps), LLM formatting defaults (Title Case headings,
+`**Label:** text` bullets, bold overuse), and filler/grammar problems (weasel
+words, wordy phrases, passive voice).
 
 ## Use
 
@@ -91,7 +94,7 @@ npx style-doctor --json-compact  # same, one line
 
 ```json
 {
-  "schemaVersion": 1, "tool": "style-doctor", "version": "0.3.0",
+  "schemaVersion": 1, "tool": "style-doctor", "version": "0.4.0",
   "ok": false, "score": 78, "label": "Needs work", "words": 640,
   "summary": { "issues": 6, "errors": 6, "warnings": 0, "filesWithIssues": 1,
                "byCategory": { "LLM Tells": { "errors": 6, "warnings": 0 } } },
@@ -110,8 +113,9 @@ scan → apply `help` at each `line:col` → re-scan until `ok` / your `--min`.
 
 ## Options
 
-`--category "LLM Tells"|Filler|Grammar` (repeatable, display filter; score stays
-global) · `--no-warnings` · `--only a,b` · `--ignore a,b` · `--exclude a,b`
+`--category "LLM Tells"|AI Artifacts|Filler|Formatting|Grammar` (repeatable,
+display filter; score stays global) · `--no-warnings` · `--only a,b` ·
+`--ignore a,b` · `--exclude a,b`
 (skip paths, globs) · `--no-templates` · `-` (read stdin) · `--stdin-name
 <label>` · `--no-color` / `NO_COLOR` · `--rules` · `--selftest`.
 
@@ -156,6 +160,15 @@ CI-friendly CLI. Thanks, Simon.
 
 The output format and CI ergonomics follow
 [react-doctor](https://github.com/millionco/react-doctor).
+
+The AI Artifacts and Formatting rules (chatbot sign-offs, citation scraps,
+Title Case headings, `**Label:**` bullets, bold overuse), and several LLM
+Tells / Filler rules (copula avoidance, vague attribution, legacy praise,
+hedge stacking), come from Wikipedia's
+[Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
+and Conor Bronsdon's
+[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) pattern
+list.
 
 ## Changelog
 
