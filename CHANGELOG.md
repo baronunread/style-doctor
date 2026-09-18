@@ -4,6 +4,15 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [0.4.1] - 2026-09-18
+
+### Added
+
+- `rules.js` (the dependency-free rule engine, split out for the browser in
+  0.4.0) is now a public subpath export: `import { findInText } from
+  "style-doctor/rules.js"`. Powers the live demo at
+  [style-doctor-site](https://github.com/baronunread/style-doctor-site).
+
 ## [0.4.0] - 2026-09-18
 
 ### Added
@@ -63,6 +72,7 @@ This file lists all notable changes to the project. Format follows
 - Initial release: scan Markdown/text for LLM tells, filler, and naive grammar
   issues; 0-100 score; grouped findings; `--json`; CI exit codes.
 
+[0.4.1]: https://github.com/baronunread/style-doctor/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/baronunread/style-doctor/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/baronunread/style-doctor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/baronunread/style-doctor/compare/v0.1.1...v0.2.0
