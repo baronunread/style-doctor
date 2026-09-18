@@ -4,7 +4,7 @@
  * browser (see web/index.html).
  */
 
-const VERSION = "0.4.1";
+const VERSION = "0.4.2";
 const PLUGIN = "style-doctor";
 const K = 4.0; // score = 100 - K * (weighted findings per 100 words)
 const WEIGHT = { error: 3, warning: 1 };
@@ -82,7 +82,7 @@ const RULES = [
     "A high em-dash rate is a common LLM tell.",
     "Replace some with periods or commas."],
   ["superficial-ing", "warning", "LLM Tells", "Superficial-analysis \"-ing\" filler",
-    String.raw`\b(?:underscor(?:e|es|ing)|highlight(?:s|ing)?|showcas(?:e|es|ing)|foster(?:s|ing)?|emphasiz(?:e|es|ing))\b`,
+    String.raw`\b(?:underscoring|highlighting|showcasing|fostering|emphasizing)\b`,
     "These \"-ing\" connectives gesture at analysis without adding any.",
     "State the actual point instead."],
   ["ai-vocab", "warning", "LLM Tells", "AI-vocabulary word",
@@ -108,7 +108,7 @@ const RULES = [
   ["title-case-heading", "warning", "Formatting", "Title Case Every Word heading",
     String.raw`^#{1,6}\s+(?:[A-Z][A-Za-z'-]*\s+){2,}[A-Z][A-Za-z'-]*\s*$`,
     "Capitalizing every word in a heading is an LLM formatting default.",
-    "Use sentence case."],
+    "Use sentence case.", "g"], // case-sensitive: "gi" would let lowercase words match [A-Z]
   ["inline-bold-bullet", "warning", "Formatting", "\"**Label:** text\" bullet",
     String.raw`^\s*[-*]\s*\*\*[^*\n]+:\*\*`,
     "Bolded label-then-colon bullets are an LLM list default.",
@@ -185,9 +185,9 @@ const RULES = [
     "Start with the real subject."],
 ];
 
-const COMPILED = RULES.map(([id, sev, cat, title, src, message, help]) => ({
+const COMPILED = RULES.map(([id, sev, cat, title, src, message, help, flags = "gi"]) => ({
   id, sev, cat, title, message, help,
-  re: src ? new RegExp(src, "gi") : null,
+  re: src ? new RegExp(src, flags) : null,
 }));
 const BY_ID = Object.fromEntries(COMPILED.map((r) => [r.id, r]));
 

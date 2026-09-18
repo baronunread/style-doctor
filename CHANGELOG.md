@@ -4,6 +4,18 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [0.4.2] - 2026-09-18
+
+### Fixed
+
+- `title-case-heading` compiled with the `i` flag along with every other rule,
+  so its `[A-Z]` capitalization check matched lowercase words too (e.g.
+  flagged `## For an AI`, where "an" isn't capitalized). Rules can now opt
+  into case-sensitive matching.
+- `superficial-ing` matched bare/plural forms ("highlights", "fosters") in
+  addition to "-ing" forms, contradicting its own name and message. Narrowed
+  to actual "-ing" forms only.
+
 ## [0.4.1] - 2026-09-18
 
 ### Added

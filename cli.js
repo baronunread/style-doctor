@@ -317,7 +317,7 @@ const SLOP =
   "a plethora of crucial benefits—truly—and at the end of the day, " +
   "this leverages a myriad of paradigms—moreover it is essential. " +
   "Industry reports show experts believe this serves as a meticulous, intricate " +
-  "interplay that underscores enduring value, nestled in the heart of a vibrant " +
+  "interplay that is underscoring enduring value, nestled in the heart of a vibrant " +
   "landscape. It could potentially garner attention—interestingly, studies show " +
   "observers have cited a rich history. I hope this helps! Let me know if you " +
   "have questions.";
