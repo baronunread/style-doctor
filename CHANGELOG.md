@@ -4,6 +4,16 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `staccato-sentences` (warning, LLM Tells) detects same-line pairs of short
+  comparative claims such as "More reliable. Less expensive." and "Sleep
+  better. Live longer." Guidance tells agents to avoid the pattern in landing
+  pages and combine the claims into one specific sentence.
+- Template extraction retains these short slogan pairs for linting.
+
 ## [0.4.2] - 2026-09-18
 
 ### Fixed
