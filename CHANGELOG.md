@@ -4,7 +4,7 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.3] - 2026-10-08
 
 ### Added
 
@@ -95,6 +95,7 @@ This file lists all notable changes to the project. Format follows
   issues; 0-100 score; grouped findings; `--json`; CI exit codes.
 
 [0.4.1]: https://github.com/baronunread/style-doctor/compare/v0.4.0...v0.4.1
+[0.4.3]: https://github.com/baronunread/style-doctor/compare/v0.4.2...v0.4.3
 [0.4.0]: https://github.com/baronunread/style-doctor/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/baronunread/style-doctor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/baronunread/style-doctor/compare/v0.1.1...v0.2.0
