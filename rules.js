@@ -4,7 +4,7 @@
  * browser (see web/index.html).
  */
 
-const VERSION = "0.4.2";
+const VERSION = "0.4.4";
 const PLUGIN = "style-doctor";
 const K = 4.0; // score = 100 - K * (weighted findings per 100 words)
 const WEIGHT = { error: 3, warning: 1 };

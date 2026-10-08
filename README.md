@@ -101,7 +101,7 @@ npx style-doctor --json-compact  # same, one line
 
 ```json
 {
-  "schemaVersion": 1, "tool": "style-doctor", "version": "0.4.3",
+  "schemaVersion": 1, "tool": "style-doctor", "version": "0.4.4",
   "ok": false, "score": 78, "label": "Needs work", "words": 640,
   "summary": { "issues": 6, "errors": 6, "warnings": 0, "filesWithIssues": 1,
                "byCategory": { "LLM Tells": { "errors": 6, "warnings": 0 } } },
