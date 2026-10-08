@@ -13,6 +13,13 @@ chatgpt.com` citation scraps), LLM formatting defaults (Title Case headings,
 `**Label:** text` bullets, bold overuse), and filler/grammar problems (weasel
 words, wordy phrases, passive voice).
 
+`staccato-sentences` warns about paired short comparative slogans such as
+“More reliable. Less expensive.” and “Sleep better. Live longer.” Its guidance
+is to avoid these pairs in landing pages and explain the benefit in one specific
+sentence. The heuristic matches pairs on the same line in any scanned prose;
+it does not classify pages or flag every short sentence. Use `--ignore
+staccato-sentences` when this rhythm is intentional.
+
 ## Use
 
 ```

@@ -343,6 +343,27 @@ function selftest() {
   const clean = findInText(CLEAN, "clean.md", {});
   assert(clean.diagnostics.length === 0, `clean not clean: ${JSON.stringify(clean.diagnostics)}`);
 
+  const staccatoOnly = { only: new Set(["staccato-sentences"]) };
+  for (const copy of ["More reliable. Less expensive.", "Sleep better. Live longer.",
+    "Work smarter. Ship faster.", "MORE RELIABLE. LESS EXPENSIVE."]) {
+    for (const [text, file] of [[copy, "landing.md"], [`<h1>${copy}</h1>`, "index.html"]]) {
+      const findings = findInText(text, file, staccatoOnly).diagnostics;
+      assert(findings.length === 1 && findings[0].match === copy &&
+        findings[0].severity === "warning", `staccato missing: ${file}: ${copy}`);
+    }
+  }
+  for (const copy of ["It rained. We left.", "Sleep better with a quieter room.",
+    "The system is more reliable. It is less expensive.",
+    "`More reliable. Less expensive.`", "> Sleep better. Live longer.",
+    "```\nMore reliable. Less expensive.\n```", "More reliable.\n\nLess expensive."]) {
+    assert(findInText(copy, "copy.md", staccatoOnly).diagnostics.length === 0,
+      `staccato false positive: ${copy}`);
+  }
+  const slogan = findInText("Intro.\n  Sleep better. Live longer.", "copy.md", staccatoOnly).diagnostics[0];
+  assert(slogan.line === 2 && slogan.column === 3, "staccato location");
+  assert(findInText("Sleep better. Live longer.", "copy.md",
+    { ignore: new Set(["staccato-sentences"]) }).diagnostics.length === 0, "staccato ignore");
+
   const one = findInText("We should delve here.", "x.md", {}).diagnostics[0];
   assert(one.rule === "delve" && one.line === 1 && one.column === 11 &&
     one.id === "x.md::1:11::style-doctor/delve", `id/col: ${JSON.stringify(one)}`);

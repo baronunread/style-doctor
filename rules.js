@@ -11,8 +11,16 @@ const WEIGHT = { error: 3, warning: 1 };
 const CATEGORY_ORDER = ["LLM Tells", "AI Artifacts", "Filler", "Formatting", "Grammar"];
 
 // [id, severity, category, title, regexSource, message, help]
+// Narrow heuristic for paired comparative slogans, not all short sentences.
+const STACCATO_CLAIM = String.raw`(?:\b(?:more|less)[ \t]+[a-z]+(?:[ \t]+[a-z]+)?|\b[a-z]+[ \t]+(?:better|longer|faster|smarter|harder|easier))`;
+const STACCATO_PAIR = String.raw`(?<![\w'’])${STACCATO_CLAIM}\.[ \t]+${STACCATO_CLAIM}\.(?!\w)`;
+const STACCATO_PROSE = new RegExp(STACCATO_PAIR, "i");
 const RULES = [
   // --- LLM Tells --------------------------------------------------------------
+  ["staccato-sentences", "warning", "LLM Tells", "Paired staccato marketing sentences",
+    STACCATO_PAIR,
+    "Paired short comparative claims create a repetitive staccato rhythm in landing-page copy.",
+    "Never use staccato sentence pairs in landing pages. Combine the claims into one specific sentence that explains the benefit."],
   ["not-just-but", "error", "LLM Tells", "\"Not just X, but Y\" construction",
     String.raw`\bnot (?:just|only|merely)\b[^.\n]{1,60}?,?\s+but\b`,
     "The \"not just X, but Y\" escalation is one of the strongest LLM tells.",
@@ -256,7 +264,7 @@ function proseLine(line) {
   const t = line.trim();
   if (t.length < 12 || !/\s/.test(t)) return false;
   const words = t.split(/\s+/).filter((w) => /^[A-Za-z][A-Za-z'’-]*$/.test(w));
-  if (words.length < 3) return false;
+  if (words.length < 3 && !STACCATO_PROSE.test(t)) return false;
   if (/[/\\{}<>|=]|::|\$\(|=>/.test(t) && words.length < 8) return false;
   return true;
 }
