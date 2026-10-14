@@ -63,7 +63,7 @@ const lines = [
   `Source: [pinned upstream catalog](${coverage.source}).`, '',
   summary, '',
   'These counts describe representative examples, not complete detection of every phrase or editorial concept in a pattern. Relevant rules are assigned explicitly; an unrelated finding does not count as coverage. Every ID has a probe and a decision, including intentionally unsupported patterns.', '',
-  'The 0.5.0 column records results from the released tag’s engine. The candidate column is generated from the current engine, incorporating the coverage fixes introduced in PR #16. Package and website versions are tracked separately.', '',
+  'The 0.5.0 column records results from the released tag’s engine. The candidate column is generated from the current engine, incorporating PR #16 and subsequent targeted fixes. Package and website versions are tracked separately.', '',
   'Quoted examples have their outer presentation quotes removed. Where upstream gives a description instead of literal prose, the fixture supplies an explicitly labeled rendered or description-derived example. Such examples do not establish factual accuracy or author intent.', '',
   'Run `npm run verify:feedhive` to verify expectations and the generated report. Run `node scripts/verify-feedhive.mjs --write` to regenerate this file after reviewing an intentional change. Fixtures include the unmodified upstream snapshot, input text, expected relevant rules, baseline matches, and the decision for each pattern.', '',
   'To independently recheck the recorded baseline, run `git show v0.5.0:rules.js > /tmp/style-doctor-v050-rules.mjs`, then `node scripts/verify-feedhive.mjs --baseline /tmp/style-doctor-v050-rules.mjs`.', '',

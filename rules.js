@@ -15,6 +15,8 @@ const CATEGORY_ORDER = ["LLM Tells", "AI Artifacts", "Filler", "Formatting", "Gr
 const STACCATO_CLAIM = String.raw`(?:\b(?:more|less)[ \t]+[a-z]+(?:[ \t]+[a-z]+)?|\b[a-z]+[ \t]+(?:better|longer|faster|smarter|harder|easier))`;
 const STACCATO_PAIR = String.raw`(?<![\w'’])${STACCATO_CLAIM}\.[ \t]+${STACCATO_CLAIM}\.(?!\w)`;
 const STACCATO_PROSE = new RegExp(STACCATO_PAIR, "i");
+const ENGAGEMENT_CLOSER = String.raw`(?<=^[ \t]*)(?:agree|thoughts)\?[ \t]*(?:👇\uFE0F?[ \t]*)?$`;
+const ENGAGEMENT_PROSE = new RegExp(ENGAGEMENT_CLOSER, "i");
 const RULES = [
   // --- LLM Tells --------------------------------------------------------------
   ["staccato-sentences", "warning", "LLM Tells", "Paired staccato marketing sentences",
@@ -222,8 +224,8 @@ const RULES = [
   ["faux-insight", "warning", "LLM Tells", "Stock hidden-insight hook",
     String.raw`\bwhat nobody tells you\b|\bthe part most people miss\b|\bhere['’]s what most (?:people )?get wrong\b`,
     "This hook claims an overlooked insight without establishing one.", "State the finding and how you know it."],
-  ["dramatic-transition", "warning", "Filler", "Dramatic transition",
-    String.raw`\bthis is where it gets interesting\b|\bthis changes everything\b|\bthat['’]s where things get wild\b`,
+  ["dramatic-transition", "warning", "Filler", "Dramatic change or transition",
+    String.raw`\bthis is where it gets interesting\b|\b(?:this[ \t]+)?chang(?:e[sd]?|ing)[ \t]+everything\b|\bthat['’]s where things get wild\b`,
     "This transition announces significance instead of explaining it.", "Say what changed and why it matters."],
   ["part-reveal", "warning", "Filler", "Stock reveal setup",
     String.raw`\bthe (?:best|useful|exciting) part[ \t]*(?::|\bis\b)`,
@@ -238,7 +240,7 @@ const RULES = [
     String.raw`\bi(?:['’]m| am) (?:thrilled|excited|humbled) to announce\b|\bi(?:['’]m| am) proud to share\b`,
     "This announcement starts with a stock reaction.", "Start with what happened and your role in it."],
   ["engagement-bait", "warning", "Filler", "Stock engagement or quality slogan",
-    String.raw`\bread that again\b|\blet that sink in\b|\bi['’]ll say it louder\b|\bthat['’]s it\.[ \t]+that['’]s the (?:post|tweet)\b|\bno fluff,?[ \t]+just value\b`,
+    String.raw`\bread that again\b|\blet that sink in\b|\bi['’]ll say it louder\b|\bthat['’]s it\.[ \t]+that['’]s the (?:post|tweet)\b|\bno fluff,?[ \t]+just value\b|${ENGAGEMENT_CLOSER}`,
     "This slogan tells the reader how to react without adding information.", "End on the claim or ask a specific question."],
   ["emoji-bullet", "warning", "Formatting", "Emoji list marker",
     String.raw`^[ \t]*(?:[-*][ \t]+)?(?:✅|🚀|💡|👉)\uFE0F?[ \t]+(?=\S)`,
@@ -336,6 +338,7 @@ function stripTemplate(text) {
 // class lists, and lone labels that survive tag blanking.
 function proseLine(line) {
   const t = line.trim();
+  if (ENGAGEMENT_PROSE.test(t)) return true;
   if (t.length < 12 || !/\s/.test(t)) return false;
   const words = t.split(/\s+/).filter((w) => /^[A-Za-z][A-Za-z'’-]*$/.test(w));
   if (words.length < 3 && !STACCATO_PROSE.test(t)) return false;

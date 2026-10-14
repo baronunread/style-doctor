@@ -2,11 +2,11 @@
 
 Source: [pinned upstream catalog](https://github.com/FeedHive/ai-slop-detector/blob/95d550706040191b0e75f1d89296a648bacb126e/patterns.json).
 
-120 patterns, 218 probes: 60 representative examples detected (54 in 0.5.0), 4 limited/unmatched, 56 deferred.
+120 patterns, 223 probes: 61 representative examples detected (54 in 0.5.0), 4 limited/unmatched, 55 deferred.
 
 These counts describe representative examples, not complete detection of every phrase or editorial concept in a pattern. Relevant rules are assigned explicitly; an unrelated finding does not count as coverage. Every ID has a probe and a decision, including intentionally unsupported patterns.
 
-The 0.5.0 column records results from the released tag’s engine. The candidate column is generated from the current engine, incorporating the coverage fixes introduced in PR #16. Package and website versions are tracked separately.
+The 0.5.0 column records results from the released tag’s engine. The candidate column is generated from the current engine, incorporating PR #16 and subsequent targeted fixes. Package and website versions are tracked separately.
 
 Quoted examples have their outer presentation quotes removed. Where upstream gives a description instead of literal prose, the fixture supplies an explicitly labeled rendered or description-derived example. Such examples do not establish factual accuracy or author intent.
 
@@ -71,7 +71,7 @@ To independently recheck the recorded baseline, run `git show v0.5.0:rules.js > 
 | S-06 | <code>You might be wondering how this works.</code><br>upstream example (outer quotes removed) | <code>reader-question</code> | <code>reader-question</code> | Two question-announcing phrases. |
 | S-07 | <code>The best part: it's free.</code><br>upstream example (outer quotes removed) | <code>part-reveal</code> | <code>part-reveal</code> | Selected best/useful/exciting-part colon/is setups; generic part-where remains allowed. |
 | S-08 | <code>What nobody tells you about growth: distribution beats product.</code><br>upstream example (outer quotes removed) | <code>faux-insight</code> | <code>faux-insight</code> | Selected hidden-insight hooks. |
-| S-09 | <code>And this is where it gets interesting.</code><br>upstream example (outer quotes removed) | <code>dramatic-transition</code> | <code>dramatic-transition</code> | Selected significance-announcing transitions. |
+| S-09 | <code>And this is where it gets interesting.</code><br>upstream example (outer quotes removed) | <code>dramatic-transition</code> | <code>dramatic-transition</code> | Selected significance announcements and change/changes/changed/changing-everything phrases; a concrete scope may still make the wording intentional. |
 | S-10 | <code>The useful part is that it connects to your inbox.</code><br>upstream example (outer quotes removed) | <code>part-reveal</code> | <code>part-reveal</code> | Selected best/useful/exciting-part colon/is setups; generic part-where remains allowed. |
 | S-11 | <code>Posting without a plan is just gambling with your time.</code><br>upstream example (outer quotes removed) | None | None | Deferred: identifying vivid unrelated metaphors requires context. |
 | S-12 | <code>Sales rose 20%, highlighting the strength of the brand.</code><br>upstream example (outer quotes removed) | <code>superficial-ing</code> | <code>superficial-ing</code> | Selected participles; not a grammatical trailing-clause parser. |
@@ -167,7 +167,7 @@ To independently recheck the recorded baseline, run `git show v0.5.0:rules.js > 
 | L-02 | <code>Unpopular opinion: posting less helps.</code><br>description-derived example | None | None | Deferred: hooks may describe real events or useful instructions. |
 | L-03 | <code>I'm thrilled to announce I've joined Acme!</code><br>upstream example (outer quotes removed) | <code>announcement-preface</code> | <code>announcement-preface</code> | Selected first-person stock announcement reactions. |
 | L-04 | <code>Read that again.</code><br>description-derived example | <code>engagement-bait</code> | <code>engagement-bait</code> | Selected reader-reaction slogans. |
-| L-05 | <code>Agree? 👇</code><br>upstream example (outer quotes removed) | None | None | Deferred: Agree/Thoughts can be genuine questions; publishing context is unknown. |
+| L-05 | <code>Agree? 👇</code><br>upstream example (outer quotes removed) | None | <code>engagement-bait</code> | Standalone Agree?/Thoughts? lines, optionally followed by a pointing-down emoji; substantive questions and inline uses remain allowed. |
 | L-06 | <code>Here are 7 lessons I learned from building a company.</code><br>description-derived example | None | None | Deferred: lesson lists can be specific and substantive. |
 | L-07 | <code>I don't usually post this, but I made a sale.</code><br>description-derived example | None | None | Deferred: personal framing and sensitivity may be meaningful. |
 | L-08 | <code>A thread 🧵 ↵ 1/ Start posting.</code><br>description-derived example | None | None | Deferred: thread markers may be correct; thread destination is unknown. |
@@ -240,6 +240,8 @@ These checks make selected gaps visible instead of assuming a match on one examp
 | S-10 | <code>The part where it connects to your inbox.</code><br>catalog variant | None | None |
 | S-10 | <code>It connects to your inbox.</code><br>upstream rewrite (outer quotes removed) | None | None |
 | S-08 | <code>Distribution brought us more users than any feature.</code><br>upstream rewrite (outer quotes removed) | None | None |
+| S-09 | <code>I built a system that changed everything.</code><br>reported regression/boundary | None | <code>dramatic-transition</code> |
+| S-09 | <code>Changing everything took three months.</code><br>reported regression/boundary | None | <code>dramatic-transition</code> |
 | S-11 | <code>Without a plan you post less and repeat topics.</code><br>upstream rewrite (outer quotes removed) | None | None |
 | S-12 | <code>Sales rose 20%.</code><br>upstream rewrite (outer quotes removed) | None | None |
 | S-14 | <code>The agent drafts, reviews and publishes.</code><br>upstream rewrite (outer quotes removed) | None | None |
@@ -281,6 +283,9 @@ These checks make selected gaps visible instead of assuming a match on one examp
 | B-08 | <code>contentReference oaicite turn2view3</code><br>catalog variant | <code>ai-artifact</code> | <code>ai-artifact</code> |
 | L-03 | <code>I joined Acme to lead the growth team.</code><br>upstream rewrite (outer quotes removed) | None | None |
 | L-04 | <code>Let that sink in.</code><br>catalog variant | <code>engagement-bait</code> | <code>engagement-bait</code> |
+| L-05 | <code>Thoughts? 👇</code><br>reported regression/boundary | None | <code>engagement-bait</code> |
+| L-05 | <code>Do you agree?</code><br>reported regression/boundary | None | None |
+| L-05 | <code>Agree? Please explain your reasoning.</code><br>reported regression/boundary | None | None |
 | L-10 | <code>That's it. That's the post.</code><br>catalog variant | <code>engagement-bait</code> | <code>engagement-bait</code> |
 | L-12 | <code>Straight to the point.</code><br>catalog variant | None | None |
 

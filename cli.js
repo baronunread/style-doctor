@@ -357,7 +357,7 @@ function selftest() {
     ["rhetorical-qa", ["Why does this matter? Because", "The result? It", "What does it mean? This"], "What does this mean? See the API reference."],
     ["reader-question", ["You might be wondering", "The obvious question is"], "The reader asked how retries work."],
     ["faux-insight", ["What nobody tells you", "The part most people miss", "Here’s what most get wrong"], "Most people missed the meeting."],
-    ["dramatic-transition", ["This is where it gets interesting", "This changes everything", "That’s where things get wild"], "This changes the timeout to 30 seconds."],
+    ["dramatic-transition", ["This is where it gets interesting", "This changes everything", "changed everything", "Changing everything", "That’s where things get wild"], "This changes the timeout to 30 seconds."],
     ["part-reveal", ["The best part:", "The useful part is", "The exciting part is"], "The best part of the test suite covers retries."],
     ["imagine-world", ["Imagine a world where", "Picture this:", "What if I told you"], "Picture this chart at twice its current size."],
     ["secret-sauce", ["Secret sauce", "Silver bullet", "Holy grail"], "The sauce contains garlic."],
@@ -404,6 +404,32 @@ function selftest() {
   const worthNoting = findInText("It's worth noting the timeout.", "copy.md", {}).diagnostics;
   assert(worthNoting.length === 1 && worthNoting[0].rule === "important-to-note",
     "worth noting counted twice");
+  const engagementOnly = { only: new Set(["engagement-bait"]) };
+  for (const copy of ["Agree?", "Agree? 👇", "Thoughts?", "THOUGHTS? 👇"]) {
+    for (const [text, file, column] of [[`  ${copy}`, "copy.md", 3], [`<p>${copy}</p>`, "copy.html", 4]]) {
+      const findings = findInText(text, file, engagementOnly).diagnostics;
+      assert(findings.length === 1 && findings[0].column === column && findings[0].match === copy,
+        `engagement closer missing: ${file}: ${copy}`);
+    }
+    for (const text of [`\`${copy}\``, `> ${copy}`, `\`\`\`\n${copy}\n\`\`\``])
+      assert(!findInText(text, "copy.md", engagementOnly).diagnostics.length,
+        `engagement closer scanned code/quote: ${copy}`);
+    assert(!findInText(copy, "copy.md", { ignore: new Set(["engagement-bait"]) }).diagnostics.length,
+      `engagement closer ignore: ${copy}`);
+  }
+  for (const copy of ["Do you agree?", "Agree? Please explain your reasoning.", "We agree on the deadline."])
+    assert(!findInText(copy, "copy.md", engagementOnly).diagnostics.length,
+      `engagement closer false positive: ${copy}`);
+  const socialPost = "We moved our posts to Tuesday morning in March.\n" +
+    "Replies doubled within four weeks.\nI quietly built a system that changed everything.\n" +
+    "Let that sink in.\nThe calendar template is in the comments.\nAgree? 👇";
+  const socialFindings = findInText(socialPost, "post.md", {}).diagnostics;
+  assert(socialFindings.length === 4 &&
+    socialFindings.some(d => d.rule === "quiet-hype" && d.line === 3 && d.column === 3) &&
+    socialFindings.some(d => d.rule === "dramatic-transition" && d.line === 3 && d.column === 31) &&
+    socialFindings.some(d => d.rule === "engagement-bait" && d.line === 4 && d.column === 1) &&
+    socialFindings.some(d => d.rule === "engagement-bait" && d.line === 6 && d.column === 1),
+    "reported social post findings/locations");
   for (const copy of ["**Speed:** fast.", "- **Speed:** fast.", "* **Speed:** fast."])
     assert(findInText(copy, "copy.md", { only: new Set(["inline-bold-bullet"]) }).diagnostics.length === 1,
       `bold label missing: ${copy}`);

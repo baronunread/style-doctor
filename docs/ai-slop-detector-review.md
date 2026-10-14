@@ -7,9 +7,9 @@ linter. The regexes here are style-doctor implementations of selected ideas.
 No dependency, network call, or installed agent skill is required.
 
 The follow-up [executable verification](feedhive-verification.md) tests all
-120 IDs with 218 probes. Released 0.5.0 catches 54 representative examples with
-a relevant rule; the candidate catches 60. Four examples remain limited or
-unmatched despite a related heuristic, and 56 editorial patterns are deferred.
+120 IDs with 223 probes. Released 0.5.0 catches 54 representative examples with
+a relevant rule; the candidate catches 61. Four examples remain limited or
+unmatched despite a related heuristic, and 55 editorial patterns are deferred.
 Those counts do not mean every alternative within a matched pattern is covered.
 The generated report records actual inputs, incidental findings, and variants.
 
@@ -85,7 +85,7 @@ them intentionally.
 | S-06 | New: `reader-question` catches two question-announcing phrases. |
 | S-07, S-10 | New: `part-reveal` catches best/useful/exciting-part setups followed by a colon or “is”. Ordinary uses of “part” remain allowed. |
 | S-08 | New: `faux-insight` catches selected hidden-insight hooks. |
-| S-09 | New: `dramatic-transition` catches selected significance announcements. |
+| S-09 | Extended: `dramatic-transition` catches selected significance announcements and change/changes/changed/changing-everything phrases without requiring “this”. |
 | S-11 | Deferred: metaphor interpretation requires context. |
 | S-12 | Existing: `superficial-ing`; no grammatical parsing of trailing clauses. |
 | S-13, S-14, S-15 | Deferred: triples, synonyms, and “one” are frequently useful; detecting reflexive use needs context. |
@@ -157,7 +157,8 @@ them intentionally.
 | L-02 | Deferred: hooks can state actual events or useful instructions. |
 | L-03 | New: `announcement-preface` catches first-person stock announcement reactions. |
 | L-04 | New: `engagement-bait` catches selected reader-reaction slogans. |
-| L-05, L-06, L-07, L-08, L-09 | Deferred: questions, lessons, personal framing, threads, and hashtags depend on the publishing context. |
+| L-05 | Extended: `engagement-bait` catches standalone “Agree?” / “Thoughts?” lines, optionally followed by 👇. Substantive questions and inline uses remain allowed. |
+| L-06, L-07, L-08, L-09 | Deferred: lessons, personal framing, threads, and hashtags depend on the publishing context. |
 | L-10 | New: `engagement-bait` catches the explicit post/tweet-ending slogan on the same line. |
 | L-11 | Deferred: repost requests can be intentional calls to action. |
 | L-12 | New: `engagement-bait` catches the specific no-fluff/just-value slogan; ordinary “straight to the point” remains allowed. |

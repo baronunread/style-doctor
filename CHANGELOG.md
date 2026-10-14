@@ -4,6 +4,15 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- `dramatic-transition` detects "changed everything" and other change-verb
+  variants without requiring the subject "this".
+- `engagement-bait` detects standalone "Agree?" / "Thoughts?" lines, optionally
+  followed by 👇, including short text nodes in templates.
+
 ## [0.5.1] - 2026-10-14
 
 ### Added
