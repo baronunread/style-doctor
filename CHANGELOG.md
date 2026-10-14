@@ -4,6 +4,24 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Eighteen selected FeedHive ai-slop-detector rules for stock hooks, filler
+  prefaces, vague promises, engagement slogans, emoji list markers, unfilled
+  placeholders, and leftover assistant draft introductions/editing offers.
+  Style checks are warnings; explicit assistant draft residue is an error.
+- A review mapping all 120 upstream patterns to existing, extended, new, or
+  deferred checks, with the limits of the regex heuristics documented.
+
+### Changed
+
+- Extended `its-not-x-its-y`, `unlock`, `todays-world`, `important-to-note`,
+  `in-conclusion`, `hedge-stack`, and `ai-artifact` with selected variants.
+- Removed duplicate `hedge-stack` findings for "it's worth noting", which is
+  already reported by `important-to-note`.
+
 ## [0.4.4] - 2026-10-08
 
 ### Fixed
