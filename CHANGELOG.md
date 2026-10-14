@@ -11,6 +11,17 @@ This file lists all notable changes to the project. Format follows
 - `quiet-hype` warns about "quietly" before selected achievement/change verbs,
   including "quietly built a system". Ordinary low-noise descriptions such as
   "quietly spoke" remain allowed; meaningful discretion still needs context.
+- `commentary-praise`, `journey-hype`, and `question-reversal` warn about selected
+  significance commentary, abstract embark-on-journey openers, and stock
+  question/problem reversals missed by the initial FeedHive integration.
+- Reproducible verification of all 120 upstream patterns with 218 probes,
+  a pinned source snapshot, recorded 0.5.0 results, and explicit detection limits.
+
+### Changed
+
+- `ai-artifact` catches "Hope this helps" with or without the initial "I".
+- `inline-bold-bullet` catches bold colon-label lines with or without a bullet,
+  retaining its existing rule ID.
 
 ## [0.5.0] - 2026-10-14
 
