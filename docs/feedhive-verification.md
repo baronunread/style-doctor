@@ -6,7 +6,7 @@ Source: [pinned upstream catalog](https://github.com/FeedHive/ai-slop-detector/b
 
 These counts describe representative examples, not complete detection of every phrase or editorial concept in a pattern. Relevant rules are assigned explicitly; an unrelated finding does not count as coverage. Every ID has a probe and a decision, including intentionally unsupported patterns.
 
-The 0.5.0 column records results from the released tag’s engine. The candidate column is generated from the current PR engine. This PR is not yet published or deployed.
+The 0.5.0 column records results from the released tag’s engine. The candidate column is generated from the current engine, incorporating the coverage fixes introduced in PR #16. Package and website versions are tracked separately.
 
 Quoted examples have their outer presentation quotes removed. Where upstream gives a description instead of literal prose, the fixture supplies an explicitly labeled rendered or description-derived example. Such examples do not establish factual accuracy or author intent.
 

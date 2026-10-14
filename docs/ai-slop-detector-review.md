@@ -185,4 +185,4 @@ code/quote exclusions. All new phrase rules except the Markdown emoji marker
 also run through HTML prose extraction. It also verifies all 120 upstream IDs
 and their probe expectations through `scripts/verify-feedhive.mjs` and checks
 that the generated report matches the engine. Existing scanner/report tests
-remain in place. Versions and release tags are unchanged; this is an unreleased PR.
+remain in place. The follow-up fixes ship in 0.5.1; the recorded baseline remains 0.5.0.
