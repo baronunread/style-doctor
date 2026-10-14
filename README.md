@@ -20,6 +20,15 @@ sentence. The heuristic matches pairs on the same line in any scanned prose;
 it does not classify pages or flag every short sentence. Use `--ignore
 staccato-sentences` when this rhythm is intentional.
 
+Selected patterns from FeedHive's
+[ai-slop-detector](https://github.com/FeedHive/ai-slop-detector) also flag stock
+insight hooks, dramatic transitions, hollow promises, announcement prefaces,
+engagement slogans, emoji list markers, and unfilled draft placeholders. These
+are warnings; leftover assistant editing offers and draft introductions are
+errors. All findings are editing prompts, not evidence that AI wrote the text.
+See the [catalog review](docs/ai-slop-detector-review.md) for rule IDs, upstream
+coverage, and patterns deliberately left to editorial judgment.
+
 ## Use
 
 ```
@@ -176,6 +185,11 @@ hedge stacking), come from Wikipedia's
 and Conor Bronsdon's
 [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) pattern
 list.
+
+The selected FeedHive patterns are adapted from its MIT-licensed
+[ai-slop-detector catalog](https://github.com/FeedHive/ai-slop-detector/blob/95d550706040191b0e75f1d89296a648bacb126e/patterns.json).
+The [catalog review](docs/ai-slop-detector-review.md) records the selection and
+limits. FeedHive's copyright notice is included in [LICENSE](./LICENSE).
 
 ## Changelog
 

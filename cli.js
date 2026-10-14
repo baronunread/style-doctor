@@ -343,6 +343,64 @@ function selftest() {
   const clean = findInText(CLEAN, "clean.md", {});
   assert(clean.diagnostics.length === 0, `clean not clean: ${JSON.stringify(clean.diagnostics)}`);
 
+  // Selected FeedHive phrases: positive examples and nearby legitimate prose.
+  const feedhiveCases = [
+    ["at-its-core", ["At its core", "When all is said and done"], "The core temperature is 900 degrees."],
+    ["hollow-promise", ["Look no further", "You've come to the right place", "The ultimate guide", "Everything you need to know"], "The guide covers CSV imports."],
+    ["conversational-preface", ["Here's the thing", "Here’s the deal", "Let me be clear", "I'll be honest", "I’ll be straight with you"], "I will be honest in my report."],
+    ["truth-preface", ["The truth is", "The reality is", "The hard truth", "The uncomfortable truth"], "The test checks whether the value is true."],
+    ["vague-future", ["The future is bright", "The possibilities are endless", "Only time will tell", "The sky’s the limit"], "The next release adds CSV exports."],
+    ["rhetorical-qa", ["Why does this matter? Because", "The result? It", "What does it mean? This"], "What does this mean? See the API reference."],
+    ["reader-question", ["You might be wondering", "The obvious question is"], "The reader asked how retries work."],
+    ["faux-insight", ["What nobody tells you", "The part most people miss", "Here’s what most get wrong"], "Most people missed the meeting."],
+    ["dramatic-transition", ["This is where it gets interesting", "This changes everything", "That’s where things get wild"], "This changes the timeout to 30 seconds."],
+    ["part-reveal", ["The best part:", "The useful part is", "The exciting part is"], "The best part of the test suite covers retries."],
+    ["imagine-world", ["Imagine a world where", "Picture this:", "What if I told you"], "Picture this chart at twice its current size."],
+    ["secret-sauce", ["Secret sauce", "Silver bullet", "Holy grail"], "The sauce contains garlic."],
+    ["announcement-preface", ["I'm thrilled to announce", "I’m excited to announce", "I am humbled to announce", "I'm proud to share"], "I joined Acme to lead the support team."],
+    ["engagement-bait", ["Read that again", "Let that sink in", "I'll say it louder", "That’s it. That’s the post", "No fluff, just value"], "Let that sink into the soil."],
+    ["emoji-bullet", ["✅ Faster exports", "- 🚀 Faster exports", "💡 Better defaults", "👉 Read the guide"], "The status icon is ✅ when the job finishes."],
+    ["unfilled-placeholder", ["[Your Name]", "[Company]", "[insert statistic]", "XX%"], "Read [Company](https://example.com) for details."],
+    ["assistant-offer", ["Would you like me to rewrite", "Would you like me to adjust the tone", "Let me know if you’d like a shorter version"], "Would you like me to send the invoice?"],
+    ["assistant-draft-intro", ["Here is a polished version of your post", "Here’s a revised version of your email"], "Here is a version of the API with pagination."],
+    ["its-not-x-its-y", ["It's not a tool. It's", "This isn’t about speed, it’s", "It's not a tool, it's"], "It’s not available. We expect stock tomorrow."],
+    ["unlock", ["Unlock the full potential", "Harness the potential", "Take it to the next level"], "Unlock the door with this key."],
+    ["todays-world", ["In today’s fast-paced digital world", "In the digital age", "Now more than ever"], "Today’s forecast predicts rain."],
+    ["important-to-note", ["It should be noted", "It’s worth noting", "It is important to note"], "The note contains the result."],
+    ["in-conclusion", ["To sum up", "All in all", "To recap"], "Sum up the totals in column two."],
+    ["hedge-stack", ["May potentially", "Could possibly", "Might potentially"], "This may reduce costs."],
+    ["ai-artifact", ["As an AI,", "As an AI language model", "turn0search0", "turn2view3", "citeturn0fetch1", "contentReference"], "As an AI researcher, I study model behavior; see [1] for sources."],
+  ];
+  for (const [id, positives, negative] of feedhiveCases) {
+    const only = { only: new Set([id]) };
+    const severity = ["assistant-offer", "assistant-draft-intro", "its-not-x-its-y",
+      "important-to-note", "ai-artifact"].includes(id) ? "error" : "warning";
+    for (const phrase of positives) {
+      const copy = `${phrase} This is draft text.`;
+      const finding = findInText(`Intro.\n  ${copy}`, "copy.md", only).diagnostics;
+      const column = id === "emoji-bullet" ? 1 : 3; // line marker includes indentation
+      assert(finding.length === 1 && finding[0].severity === severity &&
+        finding[0].line === 2 && finding[0].column === column &&
+        finding[0].id === `copy.md::2:${column}::style-doctor/${id}`,
+        `${id} missing or wrong location: ${phrase}`);
+      for (const text of [`\`${copy}\``, `> ${copy}`, `\`\`\`\n${copy}\n\`\`\``])
+        assert(findInText(text, "copy.md", only).diagnostics.length === 0,
+          `${id} scanned code/quote: ${phrase}`);
+      assert(!findInText(copy, "copy.md", { ignore: new Set([id]), only: only.only }).diagnostics.length,
+        `${id} ignore failed`);
+      if (id !== "emoji-bullet") {
+        const template = findInText(`<p>${copy}</p>`, "copy.html", only).diagnostics;
+        assert(template.length === 1 && template[0].column === 4,
+          `${id} template extraction: ${phrase}`);
+      }
+    }
+    assert(!findInText(negative, "copy.md", only).diagnostics.length,
+      `${id} false positive: ${negative}`);
+  }
+  const worthNoting = findInText("It's worth noting the timeout.", "copy.md", {}).diagnostics;
+  assert(worthNoting.length === 1 && worthNoting[0].rule === "important-to-note",
+    "worth noting counted twice");
+
   const staccatoOnly = { only: new Set(["staccato-sentences"]) };
   for (const copy of ["More reliable. Less expensive.", "Sleep better. Live longer.",
     "Work smarter. Ship faster.", "MORE RELIABLE. LESS EXPENSIVE."]) {
