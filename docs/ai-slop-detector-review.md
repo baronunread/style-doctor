@@ -15,7 +15,9 @@ would flag too much ordinary prose.
 ## Selection
 
 Keep stable existing rule IDs and the browser-compatible, line-based regex
-engine. Add 18 rules: 16 warnings and two errors. Warnings affect the score but
+engine. The initial integration added 18 rules: 16 warnings and two errors.
+A follow-up adds `quiet-hype` as a warning for selected achievement/change verbs
+after “quietly”, including “quietly built a system”. Warnings affect the score but
 do not block CI under the default `--blocking error`; `--blocking warning`
 blocks them too. Only explicit assistant editing offers and draft introductions
 are new errors. Placeholders remain warnings because reusable templates use
@@ -37,7 +39,8 @@ them intentionally.
 | V-13 | Existing: `navigate` catches selected abstract objects; journeys and paths need context. |
 | V-14 | Existing: `game-changer`; other adjectives can describe real changes. |
 | V-15 | Existing: `connective-overload`, `hedge-stack`; do not ban every transition. |
-| V-16, V-17, V-18, V-19 | Deferred: these words and collocations have frequent literal or useful meanings. |
+| V-16, V-18, V-19 | Deferred: these words and collocations have frequent literal or useful meanings. |
+| V-17 | New: `quiet-hype` catches “quietly” before selected achievement/change verbs (build, create, launch, ship, transform, reshape, crept up). Ordinary sound descriptions remain allowed; “silently” and “subtly” are deferred. |
 | V-20 | Extended: `todays-world` gains smart apostrophes, digital-world/age, and now-more-than-ever variants. Generic “in an era of” remains allowed. |
 
 ## Stock phrases
@@ -160,6 +163,8 @@ not globally normalized. Template entity decoding is outside this change.
 These are editing prompts, not authorship detection. For example, a literal
 “at its core” description or a factual “It's not available. It's on backorder.”
 can match. Source citations may follow a phrase caught by `vague-attribution`.
+`quiet-hype` can also match meaningful discretion (for example, a confidential
+launch); the regex cannot determine whether that detail matters to the story.
 Read the surrounding sentence before rewriting. Use `--ignore` for intentional
 style and reusable templates; use `--only` to select a narrower rule set.
 

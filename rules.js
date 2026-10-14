@@ -181,6 +181,10 @@ const RULES = [
   // --- Selected FeedHive patterns ---------------------------------------------
   // Phrase-level heuristics only; upstream mapping and exclusions are in
   // docs/ai-slop-detector-review.md. Keep stylistic calls advisory.
+  ["quiet-hype", "warning", "LLM Tells", "Dramatic \"quietly\" achievement claim",
+    String.raw`\bquietly[ \t]+(?:build(?:s|ing)?|built|creat(?:e[ds]?|ing)|launch(?:ed|es|ing)?|ship(?:s|ped|ping)?|transform(?:s|ed|ing)?|reshap(?:e[ds]?|ing)|crept[ \t]+up)\b(?!-)`,
+    "\"Quietly\" adds a sense of hidden significance to this achievement or change.",
+    "State what happened and give the result. Keep \"quietly\" if low noise or discretion matters."],
   ["at-its-core", "warning", "Filler", "Empty framing phrase",
     String.raw`\bat its core\b|\bwhen all is said and done\b`,
     "This framing phrase delays the point.", "Start with the claim itself."],

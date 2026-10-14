@@ -345,6 +345,7 @@ function selftest() {
 
   // Selected FeedHive phrases: positive examples and nearby legitimate prose.
   const feedhiveCases = [
+    ["quiet-hype", ["quietly built a system", "Quietly building", "QUIETLY LAUNCHED", "quietly created", "quietly shipped", "quietly transformed", "quietly reshaping", "quietly crept up"], "She quietly spoke to the librarian."],
     ["at-its-core", ["At its core", "When all is said and done"], "The core temperature is 900 degrees."],
     ["hollow-promise", ["Look no further", "You've come to the right place", "The ultimate guide", "Everything you need to know"], "The guide covers CSV imports."],
     ["conversational-preface", ["Here's the thing", "Here’s the deal", "Let me be clear", "I'll be honest", "I’ll be straight with you"], "I will be honest in my report."],
@@ -400,6 +401,10 @@ function selftest() {
   const worthNoting = findInText("It's worth noting the timeout.", "copy.md", {}).diagnostics;
   assert(worthNoting.length === 1 && worthNoting[0].rule === "important-to-note",
     "worth noting counted twice");
+  for (const copy of ["She quietly closed the door.", "The fan runs quietly.",
+    "They built a system.", "They quietly built-in storage."])
+    assert(!findInText(copy, "copy.md", { only: new Set(["quiet-hype"]) }).diagnostics.length,
+      `quiet-hype false positive: ${copy}`);
 
   const staccatoOnly = { only: new Set(["staccato-sentences"]) };
   for (const copy of ["More reliable. Less expensive.", "Sleep better. Live longer.",

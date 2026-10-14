@@ -4,6 +4,14 @@ This file lists all notable changes to the project. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `quiet-hype` warns about "quietly" before selected achievement/change verbs,
+  including "quietly built a system". Ordinary low-noise descriptions such as
+  "quietly spoke" remain allowed; meaningful discretion still needs context.
+
 ## [0.5.0] - 2026-10-14
 
 ### Added
