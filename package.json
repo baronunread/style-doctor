@@ -26,7 +26,8 @@
   "homepage": "https://github.com/baronunread/style-doctor#readme",
   "bugs": "https://github.com/baronunread/style-doctor/issues",
   "scripts": {
-    "test": "node cli.js --selftest"
+    "test": "node cli.js --selftest && node scripts/verify-feedhive.mjs",
+    "verify:feedhive": "node scripts/verify-feedhive.mjs"
   },
   "keywords": [
     "prose",

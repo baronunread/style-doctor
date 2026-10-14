@@ -345,6 +345,10 @@ function selftest() {
 
   // Selected FeedHive phrases: positive examples and nearby legitimate prose.
   const feedhiveCases = [
+    ["commentary-praise", ["underscore the importance", "highlights the significance", "showcased the strength", "emphasize the need"], "Highlight the selected row in blue."],
+    ["journey-hype", ["embark on your SEO journey", "Embarking on a digital transformation journey"], "We embark on a train journey tomorrow."],
+    ["question-reversal", ["The question isn't if you should use AI. It's", "The problem isn’t speed. The problem is", "The question isn't whether, it's"], "The question isn't answered in the manual."],
+    ["quiet-hype", ["quietly built a system", "Quietly building", "QUIETLY LAUNCHED", "quietly created", "quietly shipped", "quietly transformed", "quietly reshaping", "quietly crept up"], "She quietly spoke to the librarian."],
     ["at-its-core", ["At its core", "When all is said and done"], "The core temperature is 900 degrees."],
     ["hollow-promise", ["Look no further", "You've come to the right place", "The ultimate guide", "Everything you need to know"], "The guide covers CSV imports."],
     ["conversational-preface", ["Here's the thing", "Here’s the deal", "Let me be clear", "I'll be honest", "I’ll be straight with you"], "I will be honest in my report."],
@@ -369,7 +373,7 @@ function selftest() {
     ["important-to-note", ["It should be noted", "It’s worth noting", "It is important to note"], "The note contains the result."],
     ["in-conclusion", ["To sum up", "All in all", "To recap"], "Sum up the totals in column two."],
     ["hedge-stack", ["May potentially", "Could possibly", "Might potentially"], "This may reduce costs."],
-    ["ai-artifact", ["As an AI,", "As an AI language model", "turn0search0", "turn2view3", "citeturn0fetch1", "contentReference"], "As an AI researcher, I study model behavior; see [1] for sources."],
+    ["ai-artifact", ["As an AI,", "As an AI language model", "Hope this helps", "turn0search0", "turn2view3", "citeturn0fetch1", "contentReference"], "As an AI researcher, I study model behavior; see [1] for sources."],
   ];
   for (const [id, positives, negative] of feedhiveCases) {
     const only = { only: new Set([id]) };
@@ -400,6 +404,16 @@ function selftest() {
   const worthNoting = findInText("It's worth noting the timeout.", "copy.md", {}).diagnostics;
   assert(worthNoting.length === 1 && worthNoting[0].rule === "important-to-note",
     "worth noting counted twice");
+  for (const copy of ["**Speed:** fast.", "- **Speed:** fast.", "* **Speed:** fast."])
+    assert(findInText(copy, "copy.md", { only: new Set(["inline-bold-bullet"]) }).diagnostics.length === 1,
+      `bold label missing: ${copy}`);
+  for (const copy of ["This **Speed:** label is inside a sentence.", "**Speed** matters."])
+    assert(!findInText(copy, "copy.md", { only: new Set(["inline-bold-bullet"]) }).diagnostics.length,
+      `bold label false positive: ${copy}`);
+  for (const copy of ["She quietly closed the door.", "The fan runs quietly.",
+    "They built a system.", "They quietly built-in storage."])
+    assert(!findInText(copy, "copy.md", { only: new Set(["quiet-hype"]) }).diagnostics.length,
+      `quiet-hype false positive: ${copy}`);
 
   const staccatoOnly = { only: new Set(["staccato-sentences"]) };
   for (const copy of ["More reliable. Less expensive.", "Sleep better. Live longer.",

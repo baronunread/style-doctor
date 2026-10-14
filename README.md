@@ -28,6 +28,9 @@ are warnings; leftover assistant editing offers and draft introductions are
 errors. All findings are editing prompts, not evidence that AI wrote the text.
 See the [catalog review](docs/ai-slop-detector-review.md) for rule IDs, upstream
 coverage, and patterns deliberately left to editorial judgment.
+The [120-pattern verification](docs/feedhive-verification.md) records actual
+example results and detection limits; run `npm run verify:feedhive` in this
+repository to reproduce it.
 
 ## Use
 

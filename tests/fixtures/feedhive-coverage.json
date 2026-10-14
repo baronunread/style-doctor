@@ -1,0 +1,2576 @@
+{
+  "source": "https://github.com/FeedHive/ai-slop-detector/blob/95d550706040191b0e75f1d89296a648bacb126e/patterns.json",
+  "sourceSha256": "8396476d6402b1c95924b3fae88b5caacc4151382b14abe2799ccb3e9f4e6dfc",
+  "baselineVersion": "0.5.0",
+  "baselineCommit": "7a3c26b",
+  "patterns": [
+    {
+      "id": "V-01",
+      "relatedRules": [
+        "delve",
+        "deep-dive"
+      ],
+      "reason": "Selected delve/dive phrases only; unpack and explore are ordinary verbs.",
+      "probes": [
+        {
+          "text": "Let's delve into the data.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "delve"
+          ],
+          "baselineMatches": [
+            "delve"
+          ]
+        },
+        {
+          "text": "Unpack the findings.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Here is what the data shows.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-02",
+      "relatedRules": [
+        "tapestry",
+        "landscape",
+        "realm"
+      ],
+      "reason": "Selected metaphors only; literal and technical nouns are not broadly banned.",
+      "probes": [
+        {
+          "text": "the ever-evolving landscape of marketing.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "landscape"
+          ],
+          "baselineMatches": [
+            "landscape"
+          ]
+        },
+        {
+          "text": "Our developer ecosystem keeps growing.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-03",
+      "relatedRules": [
+        "testament"
+      ],
+      "reason": "Testament is detected; beacon, embodiment, and hallmark are not.",
+      "probes": [
+        {
+          "text": "The launch is a testament to the team's dedication.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "testament"
+          ],
+          "baselineMatches": [
+            "testament"
+          ]
+        },
+        {
+          "text": "The launch is a beacon of hope.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "The team shipped it in six weeks.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-04",
+      "relatedRules": [
+        "intensifier-cluster",
+        "copula-avoidance"
+      ],
+      "reason": "Selected praise words/role phrases; critical is allowed for technical use.",
+      "probes": [
+        {
+          "text": "plays a pivotal role in growth.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "intensifier-cluster",
+            "copula-avoidance"
+          ],
+          "baselineMatches": [
+            "copula-avoidance",
+            "intensifier-cluster"
+          ]
+        },
+        {
+          "text": "The system is critical to safety.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "drives 40% of signups.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-05",
+      "relatedRules": [
+        "commentary-praise",
+        "superficial-ing"
+      ],
+      "reason": "Fix: selected significance objects after commentary verbs; ordinary highlighting remains allowed.",
+      "probes": [
+        {
+          "text": "The results underscore the importance of testing.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "commentary-praise"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Highlight the selected row in blue.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Testing caught three bugs before launch.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-06",
+      "relatedRules": [
+        "superficial-ing"
+      ],
+      "reason": "Only selected participles; cultivate and nurture are not blanket bans.",
+      "probes": [
+        {
+          "text": "fostering a culture of innovation.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "superficial-ing"
+          ],
+          "baselineMatches": [
+            "superficial-ing"
+          ]
+        },
+        {
+          "text": "Cultivate a culture of innovation.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-07",
+      "relatedRules": [
+        "leverage"
+      ],
+      "reason": "Leverage is detected; utilize and literal harness/capitalization are not.",
+      "probes": [
+        {
+          "text": "Leverage AI to streamline your workflow.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "leverage"
+          ],
+          "baselineMatches": [
+            "leverage"
+          ]
+        },
+        {
+          "text": "Utilize the weekly report.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Use AI to draft the weekly report.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-08",
+      "relatedRules": [
+        "elevate",
+        "unlock"
+      ],
+      "reason": "Selected benefit phrases only; enhance, empower, supercharge, and amplify are not blanket bans.",
+      "probes": [
+        {
+          "text": "Elevate your content strategy.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "elevate"
+          ],
+          "baselineMatches": [
+            "elevate"
+          ]
+        },
+        {
+          "text": "Enhance your content strategy.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-09",
+      "relatedRules": [
+        "seamless",
+        "robust",
+        "cutting-edge"
+      ],
+      "reason": "Selected marketing adjectives; best-in-class/world-class are not included.",
+      "probes": [
+        {
+          "text": "a seamless, robust solution.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "seamless",
+            "robust"
+          ],
+          "baselineMatches": [
+            "robust",
+            "seamless"
+          ]
+        },
+        {
+          "text": "A world-class solution.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "it syncs in under a second and hasn't gone down this year.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-10",
+      "relatedRules": [
+        "ai-vocab"
+      ],
+      "reason": "Intricate/interplay detected; ordinary complex and nuanced remain allowed.",
+      "probes": [
+        {
+          "text": "the intricate interplay of factors.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "ai-vocab"
+          ],
+          "baselineMatches": [
+            "ai-vocab"
+          ]
+        },
+        {
+          "text": "A nuanced discussion of complex tradeoffs.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-11",
+      "relatedRules": [
+        "ai-vocab"
+      ],
+      "reason": "Meticulous detected; painstakingly and carefully crafted are not included.",
+      "probes": [
+        {
+          "text": "meticulously crafted templates.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "ai-vocab"
+          ],
+          "baselineMatches": [
+            "ai-vocab"
+          ]
+        },
+        {
+          "text": "Painstakingly crafted templates.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "templates tested on 200 posts.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-12",
+      "relatedRules": [
+        "ai-vocab"
+      ],
+      "reason": "Vibrant detected; common rich, dynamic, thriving, and bustling remain allowed.",
+      "probes": [
+        {
+          "text": "a vibrant community of creators.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "ai-vocab"
+          ],
+          "baselineMatches": [
+            "ai-vocab"
+          ]
+        },
+        {
+          "text": "A thriving community of creators.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "4,000 creators who post weekly.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-13",
+      "relatedRules": [
+        "journey-hype",
+        "navigate"
+      ],
+      "reason": "Fix: embark-on selected abstract journeys; ordinary trips/paths remain allowed.",
+      "probes": [
+        {
+          "text": "embark on your SEO journey.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "journey-hype"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "We embark on a train journey tomorrow.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "start with your top ten pages.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-14",
+      "relatedRules": [
+        "game-changer"
+      ],
+      "reason": "Game changer detected; other adjectives can describe real changes.",
+      "probes": [
+        {
+          "text": "This feature is a game changer.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "game-changer"
+          ],
+          "baselineMatches": [
+            "game-changer"
+          ]
+        },
+        {
+          "text": "This is revolutionary.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-15",
+      "relatedRules": [
+        "connective-overload",
+        "hedge-stack"
+      ],
+      "reason": "Selected connectives/aside markers; Importantly is not included.",
+      "probes": [
+        {
+          "text": "Additionally, the tool supports exports.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "connective-overload"
+          ],
+          "baselineMatches": [
+            "connective-overload"
+          ]
+        },
+        {
+          "text": "Importantly, the tool supports exports.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "It also exports to CSV.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-16",
+      "relatedRules": [],
+      "reason": "Deferred: intensifiers can convey real degree; no blanket word ban.",
+      "probes": [
+        {
+          "text": "a truly remarkable result.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-17",
+      "relatedRules": [
+        "quiet-hype"
+      ],
+      "reason": "Fix: quietly before selected achievement/change verbs; sound descriptions and silently/subtly remain allowed.",
+      "probes": [
+        {
+          "text": "Costs quietly crept up.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "quiet-hype"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "She quietly spoke to the librarian.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "quietly built a system",
+          "origin": "reported regression",
+          "expectedRelatedRules": [
+            "quiet-hype"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Costs rose 12% in March.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-18",
+      "relatedRules": [],
+      "reason": "Deferred: alignment/resonance can have precise literal or technical meanings.",
+      "probes": [
+        {
+          "text": "content that resonates with your audience.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "posts your audience replies to.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-19",
+      "relatedRules": [],
+      "reason": "Deferred: key can identify genuinely important findings; no blanket collocation ban.",
+      "probes": [
+        {
+          "text": "The key takeaway is consistency.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Post on the same days every week.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "V-20",
+      "relatedRules": [
+        "todays-world"
+      ],
+      "reason": "Selected era openers; general in-an-era-of is not included.",
+      "probes": [
+        {
+          "text": "In today's fast-paced digital world, content is king.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "todays-world"
+          ],
+          "baselineMatches": [
+            "todays-world"
+          ]
+        },
+        {
+          "text": "In an era of automation, timing matters.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-01",
+      "relatedRules": [
+        "important-to-note"
+      ],
+      "reason": "Selected note-announcing phrases; duplicate scoring removed.",
+      "probes": [
+        {
+          "text": "It's worth noting that the API is rate limited.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "important-to-note"
+          ],
+          "baselineMatches": [
+            "important-to-note"
+          ]
+        },
+        {
+          "text": "The API allows 100 calls a minute.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-02",
+      "relatedRules": [
+        "at-its-core",
+        "at-end-of-day"
+      ],
+      "reason": "Selected framing phrases; ultimately remains allowed.",
+      "probes": [
+        {
+          "text": "At its core, marketing is about people.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "at-its-core"
+          ],
+          "baselineMatches": [
+            "at-its-core"
+          ]
+        },
+        {
+          "text": "Ultimately, marketing is about people.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-03",
+      "relatedRules": [
+        "when-it-comes-to",
+        "wordy-phrase",
+        "world-of"
+      ],
+      "reason": "Selected padding; in terms of can state units and remains allowed.",
+      "probes": [
+        {
+          "text": "When it comes to scheduling, timing matters.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "when-it-comes-to"
+          ],
+          "baselineMatches": [
+            "when-it-comes-to"
+          ]
+        },
+        {
+          "text": "Measure the distance in terms of meters.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Posts at 9am get more reach than posts at 3pm.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-04",
+      "relatedRules": [
+        "deep-dive"
+      ],
+      "reason": "Dive phrases detected; ordinary invitations to start remain allowed.",
+      "probes": [
+        {
+          "text": "Ready? Let's dive in!",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "deep-dive"
+          ],
+          "baselineMatches": [
+            "deep-dive"
+          ]
+        },
+        {
+          "text": "Let's get started.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-05",
+      "relatedRules": [
+        "copula-avoidance"
+      ],
+      "reason": "Only qualified role phrases; the unqualified upstream example is NOT detected. Causal wording needs context.",
+      "probes": [
+        {
+          "text": "Hashtags play a role in reach.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Posts with 3 to 5 hashtags reached more people in our test.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-06",
+      "relatedRules": [
+        "copula-avoidance"
+      ],
+      "reason": "Serves/stands/functions as detected; precise technical acts-as remains allowed.",
+      "probes": [
+        {
+          "text": "The dashboard serves as a central hub.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "copula-avoidance"
+          ],
+          "baselineMatches": [
+            "copula-avoidance"
+          ]
+        },
+        {
+          "text": "The server acts as a proxy.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "The dashboard shows every scheduled post.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-07",
+      "relatedRules": [
+        "navigate"
+      ],
+      "reason": "Selected navigate phrases; nuances/ins and outs are not broad bans.",
+      "probes": [
+        {
+          "text": "helping you navigate the complexities of SEO.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "navigate"
+          ],
+          "baselineMatches": [
+            "navigate"
+          ]
+        },
+        {
+          "text": "The ins and outs of SEO.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "explains how Google picks which page to rank.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-08",
+      "relatedRules": [],
+      "reason": "Deferred: audience alternatives and conditions may be meaningful.",
+      "probes": [
+        {
+          "text": "Whether you're a solo creator or a global brand, ...",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-09",
+      "relatedRules": [
+        "hollow-promise"
+      ],
+      "reason": "Selected generic sales/guide promises.",
+      "probes": [
+        {
+          "text": "Looking for a scheduler? Look no further.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "hollow-promise"
+          ],
+          "baselineMatches": [
+            "hollow-promise"
+          ]
+        },
+        {
+          "text": "FeedHive schedules posts to 10 platforms.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-10",
+      "relatedRules": [
+        "unlock"
+      ],
+      "reason": "Selected power/potential/next-level phrases; not every possible benefit claim.",
+      "probes": [
+        {
+          "text": "Unlock the full potential of your content.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "unlock"
+          ],
+          "baselineMatches": [
+            "unlock"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P-11",
+      "relatedRules": [
+        "conversational-preface"
+      ],
+      "reason": "Selected conversation/honesty prefaces; not an intent classifier.",
+      "probes": [
+        {
+          "text": "Here's the thing: most people quit.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "conversational-preface"
+          ],
+          "baselineMatches": [
+            "conversational-preface"
+          ]
+        },
+        {
+          "text": "Most people quit in month two.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-12",
+      "relatedRules": [
+        "truth-preface"
+      ],
+      "reason": "Selected dramatic truth prefaces; truthful statements can match.",
+      "probes": [
+        {
+          "text": "The hard truth is that SEO takes time.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "truth-preface"
+          ],
+          "baselineMatches": [
+            "truth-preface"
+          ]
+        },
+        {
+          "text": "SEO takes about six months to show results.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-13",
+      "relatedRules": [
+        "ai-artifact"
+      ],
+      "reason": "Fix: Hope this helps with or without I; ordinary contact invitations remain allowed.",
+      "probes": [
+        {
+          "text": "Hope this helps!",
+          "origin": "rendered description",
+          "expectedRelatedRules": [
+            "ai-artifact"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Feel free to reach out.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-14",
+      "relatedRules": [
+        "in-conclusion"
+      ],
+      "reason": "Selected summary/recap markers; Overall remains allowed.",
+      "probes": [
+        {
+          "text": "In conclusion, consistency is key.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "in-conclusion"
+          ],
+          "baselineMatches": [
+            "in-conclusion"
+          ]
+        },
+        {
+          "text": "Overall, the result was good.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "P-15",
+      "relatedRules": [
+        "vague-future"
+      ],
+      "reason": "Four stock future cliches; not a semantic prediction check.",
+      "probes": [
+        {
+          "text": "With AI, the possibilities are endless.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "vague-future"
+          ],
+          "baselineMatches": [
+            "vague-future"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S-01",
+      "relatedRules": [
+        "its-not-x-its-y"
+      ],
+      "reason": "Selected same-line reversals; factual corrections can match.",
+      "probes": [
+        {
+          "text": "It's not a tool. It's a teammate.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "its-not-x-its-y"
+          ],
+          "baselineMatches": [
+            "its-not-x-its-y"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S-02",
+      "relatedRules": [
+        "not-just-but"
+      ],
+      "reason": "Selected not-just/only/merely plus but construction.",
+      "probes": [
+        {
+          "text": "Not just a scheduler, but a full content engine.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "not-just-but"
+          ],
+          "baselineMatches": [
+            "not-just-but"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S-03",
+      "relatedRules": [
+        "question-reversal"
+      ],
+      "reason": "Fix: selected question/problem reversals on one line; genuine reframing can match.",
+      "probes": [
+        {
+          "text": "The question isn't if you should use AI. It's how.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "question-reversal"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "The problem isn't speed. The problem is reliability.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [
+            "question-reversal"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Here is how we use AI for first drafts.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-04",
+      "relatedRules": [],
+      "reason": "Deferred: negative fragment lists can be factual exclusions; no generic fragment ban.",
+      "probes": [
+        {
+          "text": "Not a plan. Not a hope. A system.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "A system: three posts a week, written on Mondays.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-05",
+      "relatedRules": [
+        "rhetorical-qa"
+      ],
+      "reason": "Selected stock questions plus immediate because/it/this; not all rhetorical questions.",
+      "probes": [
+        {
+          "text": "Why does this matter? Because reach is everything.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "rhetorical-qa"
+          ],
+          "baselineMatches": [
+            "rhetorical-qa"
+          ]
+        },
+        {
+          "text": "How fast is it? Faster than last year.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Reach decides how many people see the post.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-06",
+      "relatedRules": [
+        "reader-question"
+      ],
+      "reason": "Two question-announcing phrases.",
+      "probes": [
+        {
+          "text": "You might be wondering how this works.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "reader-question"
+          ],
+          "baselineMatches": [
+            "reader-question"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S-07",
+      "relatedRules": [
+        "part-reveal"
+      ],
+      "reason": "Selected best/useful/exciting-part colon/is setups; generic part-where remains allowed.",
+      "probes": [
+        {
+          "text": "The best part: it's free.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "part-reveal"
+          ],
+          "baselineMatches": [
+            "part-reveal"
+          ]
+        },
+        {
+          "text": "It's free.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-10",
+      "relatedRules": [
+        "part-reveal"
+      ],
+      "reason": "Selected best/useful/exciting-part colon/is setups; generic part-where remains allowed.",
+      "probes": [
+        {
+          "text": "The useful part is that it connects to your inbox.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "part-reveal"
+          ],
+          "baselineMatches": [
+            "part-reveal"
+          ]
+        },
+        {
+          "text": "The part where it connects to your inbox.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "It connects to your inbox.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-08",
+      "relatedRules": [
+        "faux-insight"
+      ],
+      "reason": "Selected hidden-insight hooks.",
+      "probes": [
+        {
+          "text": "What nobody tells you about growth: distribution beats product.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "faux-insight"
+          ],
+          "baselineMatches": [
+            "faux-insight"
+          ]
+        },
+        {
+          "text": "Distribution brought us more users than any feature.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-09",
+      "relatedRules": [
+        "dramatic-transition"
+      ],
+      "reason": "Selected significance-announcing transitions.",
+      "probes": [
+        {
+          "text": "And this is where it gets interesting.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "dramatic-transition"
+          ],
+          "baselineMatches": [
+            "dramatic-transition"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S-11",
+      "relatedRules": [],
+      "reason": "Deferred: identifying vivid unrelated metaphors requires context.",
+      "probes": [
+        {
+          "text": "Posting without a plan is just gambling with your time.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Without a plan you post less and repeat topics.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-12",
+      "relatedRules": [
+        "superficial-ing"
+      ],
+      "reason": "Selected participles; not a grammatical trailing-clause parser.",
+      "probes": [
+        {
+          "text": "Sales rose 20%, highlighting the strength of the brand.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "superficial-ing"
+          ],
+          "baselineMatches": [
+            "superficial-ing"
+          ]
+        },
+        {
+          "text": "Sales rose 20%.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-13",
+      "relatedRules": [],
+      "reason": "Deferred: three-item lists are often useful; reflexive intent cannot be inferred.",
+      "probes": [
+        {
+          "text": "fast, simple, and powerful.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-14",
+      "relatedRules": [],
+      "reason": "Deferred: identifying the same referent across synonyms requires context.",
+      "probes": [
+        {
+          "text": "The agent drafts. The assistant reviews. The tool publishes.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "The agent drafts, reviews and publishes.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-15",
+      "relatedRules": [],
+      "reason": "Deferred: one can be a meaningful numerical constraint.",
+      "probes": [
+        {
+          "text": "Start with one workflow.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Start with your weekly newsletter.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-16",
+      "relatedRules": [
+        "boasts"
+      ],
+      "reason": "Boasts detected; ordinary features/offers/maintains remain allowed.",
+      "probes": [
+        {
+          "text": "The app boasts an intuitive interface.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "boasts"
+          ],
+          "baselineMatches": [
+            "boasts"
+          ]
+        },
+        {
+          "text": "The app offers CSV exports.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "The app has a drag-and-drop calendar.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-17",
+      "relatedRules": [
+        "imagine-world"
+      ],
+      "reason": "Selected hypothetical openers; Picture this needs a colon.",
+      "probes": [
+        {
+          "text": "Imagine a world where your posts write themselves.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "imagine-world"
+          ],
+          "baselineMatches": [
+            "imagine-world"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S-18",
+      "relatedRules": [
+        "hedge-stack"
+      ],
+      "reason": "Selected redundant modal/adverb pairs; legitimate uncertainty remains allowed.",
+      "probes": [
+        {
+          "text": "This may potentially help improve results.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "hedge-stack"
+          ],
+          "baselineMatches": [
+            "hedge-stack"
+          ]
+        },
+        {
+          "text": "This can sometimes improve results.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-19",
+      "relatedRules": [],
+      "reason": "Deferred: benefits and tradeoffs may be substantive; no generic while-clause ban.",
+      "probes": [
+        {
+          "text": "While automation saves time, it's important to stay authentic.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-20",
+      "relatedRules": [],
+      "reason": "Deferred: ranges can describe real scope or endpoints.",
+      "probes": [
+        {
+          "text": "From ideation to publication, we've got you covered.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-21",
+      "relatedRules": [],
+      "reason": "Deferred: an interpretive aside may explain genuine significance.",
+      "probes": [
+        {
+          "text": "That last point matters more than it sounds.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "S-22",
+      "relatedRules": [],
+      "reason": "Deferred: corrections can be useful. The weasel-word hit on rather is incidental, not coverage of self-correction.",
+      "probes": [
+        {
+          "text": "It's fast. Or rather, it's instant.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": [
+            "weasel-word"
+          ]
+        },
+        {
+          "text": "It's instant.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-01",
+      "relatedRules": [],
+      "reason": "Deferred: broad paragraph/fragment rhythm is not implemented. Staccato only catches comparative pairs, not this example.",
+      "probes": [
+        {
+          "text": "I quit my job.\n\nI built a product.\n\nNobody came.\n\nThen I learned this.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-02",
+      "relatedRules": [],
+      "reason": "Deferred: broad paragraph/fragment rhythm is not implemented. Staccato only catches comparative pairs, not this example.",
+      "probes": [
+        {
+          "text": "Code. Content. Customers. Every day.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-03",
+      "relatedRules": [],
+      "reason": "Deferred: repeated starters can aid parallel instructions; no generic anaphora ban.",
+      "probes": [
+        {
+          "text": "It saves time. It saves money. It saves your sanity.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "It saves about four hours a week.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-04",
+      "relatedRules": [],
+      "reason": "Deferred: sentence-shape uniformity needs a document-level metric and contextual thresholds.",
+      "probes": [
+        {
+          "text": "The team drafts weekly posts for customers, keeping every message clear today. The team reviews weekly posts for customers, keeping every message clear today. The team sends weekly posts to customers, keeping every message clear today.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-05",
+      "relatedRules": [],
+      "reason": "Deferred: long inventories can be complete and necessary.",
+      "probes": [
+        {
+          "text": "sales, marketing, support, ops, finance, hiring, legal and product.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-06",
+      "relatedRules": [],
+      "reason": "Deferred: deciding prose versus bullets requires editorial context.",
+      "probes": [
+        {
+          "text": "- Save time each week.\n- Spend less each month.\n- Grow more each year.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-07",
+      "relatedRules": [],
+      "reason": "Deferred: short sections can be useful navigation or reference material.",
+      "probes": [
+        {
+          "text": "## Why it matters\n\nPost on Tuesdays.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-08",
+      "relatedRules": [
+        "in-conclusion"
+      ],
+      "reason": "To recap marker detected; actual semantic repetition is not.",
+      "probes": [
+        {
+          "text": "To recap, we covered A, B and C.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "in-conclusion"
+          ],
+          "baselineMatches": [
+            "in-conclusion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R-09",
+      "relatedRules": [],
+      "reason": "Deferred: judging a concluding line as profound requires context.",
+      "probes": [
+        {
+          "text": "The future isn't coming. It's already here.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-10",
+      "relatedRules": [],
+      "reason": "Deferred: outlook may be supported by evidence in the preceding text.",
+      "probes": [
+        {
+          "text": "Despite these challenges, the outlook remains positive.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-11",
+      "relatedRules": [],
+      "reason": "Deferred: colloquial scaffolding can be intentional author voice.",
+      "probes": [
+        {
+          "text": "And honestly? That's when it clicked.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "R-12",
+      "relatedRules": [],
+      "reason": "Deferred: judging structure relative to answer length needs document/destination context.",
+      "probes": [
+        {
+          "text": "## Overview\n\nThe tool schedules posts.\n\n## Key Points\n\nIt exports CSV files.\n\n## Conclusion\n\nTry it today.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "M-01",
+      "relatedRules": [],
+      "reason": "Deferred: abstract personification versus useful metaphor requires context.",
+      "probes": [
+        {
+          "text": "Your data is whispering insights.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Your data shows Tuesday posts get more replies.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "M-02",
+      "relatedRules": [],
+      "reason": "Deferred: live/sit are ordinary location idioms, especially in technical writing.",
+      "probes": [
+        {
+          "text": "where your customer data lives.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "where your customer data is stored.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": [
+            "passive-voice"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M-03",
+      "relatedRules": [],
+      "reason": "Deferred: systems can literally reveal/hide information; metaphor interpretation requires context.",
+      "probes": [
+        {
+          "text": "Analytics finally get honest.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Analytics now count only real views.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "M-04",
+      "relatedRules": [],
+      "reason": "Deferred: detecting mixed metaphors requires meaning, not a noun count.",
+      "probes": [
+        {
+          "text": "a north star that fuels the engine of growth.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "M-05",
+      "relatedRules": [],
+      "reason": "Deferred: engine/fuel/flywheel and other terms have literal technical uses.",
+      "probes": [
+        {
+          "text": "content that fuels your growth engine.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "posts that bring in signups.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "M-06",
+      "relatedRules": [
+        "secret-sauce"
+      ],
+      "reason": "Three solution cliches detected; ordinary magic remains allowed.",
+      "probes": [
+        {
+          "text": "Consistency is the secret sauce.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "secret-sauce"
+          ],
+          "baselineMatches": [
+            "secret-sauce"
+          ]
+        },
+        {
+          "text": "The feature works like magic.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Accounts that posted weekly grew twice as fast.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-01",
+      "relatedRules": [
+        "intensifier-cluster"
+      ],
+      "reason": "Selected significance words; does not evaluate whether the event is important.",
+      "probes": [
+        {
+          "text": "This marks a pivotal moment for the industry.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "intensifier-cluster"
+          ],
+          "baselineMatches": [
+            "intensifier-cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C-02",
+      "relatedRules": [
+        "vague-attribution"
+      ],
+      "reason": "Selected authority phrases; sources may appear later in the paragraph.",
+      "probes": [
+        {
+          "text": "Studies show posting daily works.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "vague-attribution"
+          ],
+          "baselineMatches": [
+            "vague-attribution"
+          ]
+        },
+        {
+          "text": "Many believe posting daily works.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-03",
+      "relatedRules": [],
+      "reason": "Deferred: receipts and evidence require surrounding claims and sources.",
+      "probes": [
+        {
+          "text": "AI can transform your business.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Our AI drafts a week of posts from a 3-line brief.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-04",
+      "relatedRules": [],
+      "reason": "Deferred: portability to another topic requires semantic comparison.",
+      "probes": [
+        {
+          "text": "We're committed to delivering value to our customers.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-05",
+      "relatedRules": [],
+      "reason": "Deferred: concrete meaning versus profundity requires context.",
+      "probes": [
+        {
+          "text": "Growth is a mindset, not a metric.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-06",
+      "relatedRules": [],
+      "reason": "Deferred: judging lost specificity requires original facts/source text.",
+      "probes": [
+        {
+          "text": "a leading expert in the field.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "who wrote the Kubernetes scheduler.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-07",
+      "relatedRules": [],
+      "reason": "Deferred: invented names/numbers cannot be identified from prose alone.",
+      "probes": [
+        {
+          "text": "\"Sarah, a marketing manager, saved 10 hours a week.\" (no Sarah exists)",
+          "origin": "upstream example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-08",
+      "relatedRules": [],
+      "reason": "Deferred: surprise/interest may be supported by the facts. Surprisingly is NOT detected; earlier related-rule claim overstated coverage.",
+      "probes": [
+        {
+          "text": "Surprisingly, the simple version won.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "The simple version got twice the clicks.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-09",
+      "relatedRules": [],
+      "reason": "Deferred: identifying notability without receipts requires sources. Passive-voice is an incidental hit, not this check.",
+      "probes": [
+        {
+          "text": "She has been featured in numerous leading publications.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": [
+            "passive-voice"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C-10",
+      "relatedRules": [],
+      "reason": "Deferred: superficial versus useful balance needs document context.",
+      "probes": [
+        {
+          "text": "AI is powerful. However, it has limitations.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-11",
+      "relatedRules": [],
+      "reason": "Deferred: judging missing steps needs the task and surrounding instructions.",
+      "probes": [
+        {
+          "text": "Optimize your posting schedule.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Post Tuesday to Thursday between 8 and 10am.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "C-12",
+      "relatedRules": [
+        "hollow-promise"
+      ],
+      "reason": "Selected guide/completeness claims; master-X-in-minutes is not included.",
+      "probes": [
+        {
+          "text": "The ultimate guide to LinkedIn.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "hollow-promise"
+          ],
+          "baselineMatches": [
+            "hollow-promise"
+          ]
+        },
+        {
+          "text": "Master LinkedIn in minutes.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "How to write a LinkedIn post that gets replies.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-01",
+      "relatedRules": [
+        "em-dash-density"
+      ],
+      "reason": "Threshold-limited: the upstream two-dash example is below the three-dash minimum. A weasel-word hit is incidental.",
+      "probes": [
+        {
+          "text": "It's fast — really fast — and free.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": [
+            "weasel-word"
+          ]
+        },
+        {
+          "text": "It's fast — really fast — and free — today.",
+          "origin": "threshold control",
+          "expectedRelatedRules": [
+            "em-dash-density"
+          ],
+          "baselineMatches": [
+            "em-dash-density",
+            "weasel-word"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F-02",
+      "relatedRules": [
+        "bold-density"
+      ],
+      "reason": "Threshold-limited: two spans are below the four-span minimum. A weasel-word hit is incidental.",
+      "probes": [
+        {
+          "text": "This is **really important** for **growth**.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": [
+            "weasel-word"
+          ]
+        },
+        {
+          "text": "This has **one** and **two** and **three** and **four**.",
+          "origin": "threshold control",
+          "expectedRelatedRules": [
+            "bold-density"
+          ],
+          "baselineMatches": [
+            "bold-density"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F-03",
+      "relatedRules": [
+        "emoji-bullet"
+      ],
+      "reason": "Start-of-line emoji markers detected; inline decoration elsewhere is not.",
+      "probes": [
+        {
+          "text": "✅ Faster ✅ Cheaper ✅ Better",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "emoji-bullet"
+          ],
+          "baselineMatches": [
+            "emoji-bullet"
+          ]
+        },
+        {
+          "text": "We use ✅ to mark completed work.",
+          "origin": "format control",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-04",
+      "relatedRules": [
+        "title-case-heading"
+      ],
+      "reason": "Format-limited: bare title text is NOT detected; a Markdown # heading is required.",
+      "probes": [
+        {
+          "text": "How To Grow Your Audience On LinkedIn",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "## How To Grow Your Audience On LinkedIn",
+          "origin": "format control",
+          "expectedRelatedRules": [
+            "title-case-heading"
+          ],
+          "baselineMatches": [
+            "title-case-heading"
+          ]
+        },
+        {
+          "text": "How to grow your audience on LinkedIn",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-05",
+      "relatedRules": [
+        "inline-bold-bullet"
+      ],
+      "reason": "Fix: a bold colon-label at line start now matches with or without a bullet; arbitrary inline labels are not all matched.",
+      "probes": [
+        {
+          "text": "**Speed:** fast. **Price:** low. **Support:** great.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "inline-bold-bullet"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "- **Speed:** fast.",
+          "origin": "format control",
+          "expectedRelatedRules": [
+            "inline-bold-bullet"
+          ],
+          "baselineMatches": [
+            "inline-bold-bullet"
+          ]
+        },
+        {
+          "text": "This has **Speed:** as an inline label.",
+          "origin": "format control",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-06",
+      "relatedRules": [],
+      "reason": "Deferred: Markdown is valid input; the target publishing destination is unknown.",
+      "probes": [
+        {
+          "text": "**Subject:** New release",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-07",
+      "relatedRules": [],
+      "reason": "Deferred: typography mixes may come from names/quoted material; no automatic style normalization.",
+      "probes": [
+        {
+          "text": "“quotes” next to \"quotes\" in one paragraph.",
+          "origin": "upstream example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-08",
+      "relatedRules": [],
+      "reason": "Deferred: ordinary enthusiasm is not a sufficient reason to flag every exclamation.",
+      "probes": [
+        {
+          "text": "We updated the settings page!",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "We updated the settings page.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-09",
+      "relatedRules": [],
+      "reason": "Deferred: decorative Unicode and real mathematical notation need careful classification.",
+      "probes": [
+        {
+          "text": "𝗧𝗵𝗶𝘀 𝗶𝘀 𝗮 𝗽𝗼𝘀𝘁 𝗶𝗻 𝗯𝗼𝗹𝗱 𝗹𝗲𝘁𝘁𝗲𝗿𝘀.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "F-10",
+      "relatedRules": [],
+      "reason": "Deferred: even small tables can aid comparisons.",
+      "probes": [
+        {
+          "text": "| Option | Price |\n| --- | --- |\n| A | $10 |\n| B | $20 |",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "A is cheaper; B is faster.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-01",
+      "relatedRules": [
+        "ai-artifact"
+      ],
+      "reason": "Certainly/Of course exclamations detected; Absolutely/Great question are not included.",
+      "probes": [
+        {
+          "text": "Certainly! Here's a LinkedIn post about...",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "ai-artifact"
+          ],
+          "baselineMatches": [
+            "ai-artifact"
+          ]
+        },
+        {
+          "text": "Absolutely! Great question!",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-02",
+      "relatedRules": [],
+      "reason": "Deferred: agreement and enthusiasm can be authentic in replies.",
+      "probes": [
+        {
+          "text": "Great point, you're absolutely right!",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-03",
+      "relatedRules": [
+        "assistant-offer"
+      ],
+      "reason": "Explicit editing/length/tone offers only; ordinary service offers remain allowed.",
+      "probes": [
+        {
+          "text": "Would you like me to adjust the tone?",
+          "origin": "rendered description",
+          "expectedRelatedRules": [
+            "assistant-offer"
+          ],
+          "baselineMatches": [
+            "assistant-offer"
+          ]
+        },
+        {
+          "text": "Would you like me to send the invoice?",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-04",
+      "relatedRules": [
+        "assistant-draft-intro"
+      ],
+      "reason": "Specific revised-version draft lead-ins only; broad Here is a is allowed.",
+      "probes": [
+        {
+          "text": "Here is a polished version of your post:",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [
+            "assistant-draft-intro"
+          ],
+          "baselineMatches": [
+            "assistant-draft-intro"
+          ]
+        },
+        {
+          "text": "Here is a version of the API.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-05",
+      "relatedRules": [
+        "unfilled-placeholder"
+      ],
+      "reason": "Selected bracket placeholders and XX%; reusable templates may intentionally match.",
+      "probes": [
+        {
+          "text": "[Your Name]",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [
+            "unfilled-placeholder"
+          ],
+          "baselineMatches": [
+            "unfilled-placeholder"
+          ]
+        },
+        {
+          "text": "Read [Company](https://example.com).",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "[Company] [insert statistic] XX%",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [
+            "unfilled-placeholder"
+          ],
+          "baselineMatches": [
+            "unfilled-placeholder"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B-06",
+      "relatedRules": [
+        "ai-artifact"
+      ],
+      "reason": "AI disclaimer with punctuation or language-model phrase; professional descriptions remain allowed.",
+      "probes": [
+        {
+          "text": "As an AI, I don't have personal opinions.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [
+            "ai-artifact"
+          ],
+          "baselineMatches": [
+            "ai-artifact"
+          ]
+        },
+        {
+          "text": "As an AI researcher, I study models.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-07",
+      "relatedRules": [],
+      "reason": "Deferred: admitting missing sources can be honest and necessary.",
+      "probes": [
+        {
+          "text": "While specific figures are not widely available, ...",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "B-08",
+      "relatedRules": [
+        "ai-artifact"
+      ],
+      "reason": "Named generation/citation artifacts; numeric [1] citations remain allowed.",
+      "probes": [
+        {
+          "text": "turn0search0",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [
+            "ai-artifact"
+          ],
+          "baselineMatches": [
+            "ai-artifact"
+          ]
+        },
+        {
+          "text": "See [1] for the source.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "contentReference oaicite turn2view3",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [
+            "ai-artifact"
+          ],
+          "baselineMatches": [
+            "ai-artifact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "L-01",
+      "relatedRules": [],
+      "reason": "Deferred: one sentence per paragraph can be intentional; broad broetry detection is not implemented.",
+      "probes": [
+        {
+          "text": "I wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.\n\nI wrote a post.",
+          "origin": "rendered description",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-02",
+      "relatedRules": [],
+      "reason": "Deferred: hooks may describe real events or useful instructions.",
+      "probes": [
+        {
+          "text": "Unpopular opinion: posting less helps.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-03",
+      "relatedRules": [
+        "announcement-preface"
+      ],
+      "reason": "Selected first-person stock announcement reactions.",
+      "probes": [
+        {
+          "text": "I'm thrilled to announce I've joined Acme!",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "announcement-preface"
+          ],
+          "baselineMatches": [
+            "announcement-preface"
+          ]
+        },
+        {
+          "text": "I joined Acme to lead the growth team.",
+          "origin": "upstream rewrite (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-04",
+      "relatedRules": [
+        "engagement-bait"
+      ],
+      "reason": "Selected reader-reaction slogans.",
+      "probes": [
+        {
+          "text": "Read that again.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": [
+            "engagement-bait"
+          ]
+        },
+        {
+          "text": "Let that sink in.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": [
+            "engagement-bait"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "L-05",
+      "relatedRules": [],
+      "reason": "Deferred: Agree/Thoughts can be genuine questions; publishing context is unknown.",
+      "probes": [
+        {
+          "text": "Agree? 👇",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-06",
+      "relatedRules": [],
+      "reason": "Deferred: lesson lists can be specific and substantive.",
+      "probes": [
+        {
+          "text": "Here are 7 lessons I learned from building a company.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-07",
+      "relatedRules": [],
+      "reason": "Deferred: personal framing and sensitivity may be meaningful.",
+      "probes": [
+        {
+          "text": "I don't usually post this, but I made a sale.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-08",
+      "relatedRules": [],
+      "reason": "Deferred: thread markers may be correct; thread destination is unknown.",
+      "probes": [
+        {
+          "text": "A thread 🧵\n1/ Start posting.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-09",
+      "relatedRules": [],
+      "reason": "Deferred: hashtag count alone does not establish an irrelevant wall; platform conventions vary.",
+      "probes": [
+        {
+          "text": "#growth #marketing #content #business #startup #sales #social #writing #linkedin #success",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-10",
+      "relatedRules": [
+        "engagement-bait"
+      ],
+      "reason": "Explicit post/tweet ending slogan on the same line.",
+      "probes": [
+        {
+          "text": "That's it. That's the tweet.",
+          "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": [
+            "engagement-bait"
+          ]
+        },
+        {
+          "text": "That's it. That's the post.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": [
+            "engagement-bait"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "L-11",
+      "relatedRules": [],
+      "reason": "Deferred: repost requests can be intentional calls to action.",
+      "probes": [
+        {
+          "text": "P.S. Repost ♻️ if this helped.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-12",
+      "relatedRules": [
+        "engagement-bait"
+      ],
+      "reason": "No-fluff/just-value slogan only; straight-to-the-point and real-talk remain allowed.",
+      "probes": [
+        {
+          "text": "No fluff, just value.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": [
+            "engagement-bait"
+          ]
+        },
+        {
+          "text": "Straight to the point.",
+          "origin": "catalog variant",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-13",
+      "relatedRules": [],
+      "reason": "Deferred: ordinary compliments/replies may be authentic.",
+      "probes": [
+        {
+          "text": "Great insights!",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-14",
+      "relatedRules": [],
+      "reason": "Deferred: verifying personal vulnerability or sales intent requires facts/context.",
+      "probes": [
+        {
+          "text": "I failed. I was broke. Then I discovered a new sales tool.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    },
+    {
+      "id": "L-15",
+      "relatedRules": [],
+      "reason": "Deferred: a contrarian claim may be supported by evidence.",
+      "probes": [
+        {
+          "text": "Everyone says posting daily works. They're wrong.",
+          "origin": "description-derived example",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        }
+      ]
+    }
+  ]
+}
