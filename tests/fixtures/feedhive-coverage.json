@@ -1152,7 +1152,7 @@
       "relatedRules": [
         "dramatic-transition"
       ],
-      "reason": "Selected significance-announcing transitions.",
+      "reason": "Selected significance announcements and change/changes/changed/changing-everything phrases; a concrete scope may still make the wording intentional.",
       "probes": [
         {
           "text": "And this is where it gets interesting.",
@@ -1163,6 +1163,22 @@
           "baselineMatches": [
             "dramatic-transition"
           ]
+        },
+        {
+          "text": "I built a system that changed everything.",
+          "origin": "reported regression/boundary",
+          "expectedRelatedRules": [
+            "dramatic-transition"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Changing everything took three months.",
+          "origin": "reported regression/boundary",
+          "expectedRelatedRules": [
+            "dramatic-transition"
+          ],
+          "baselineMatches": []
         }
       ]
     },
@@ -2403,12 +2419,36 @@
     },
     {
       "id": "L-05",
-      "relatedRules": [],
-      "reason": "Deferred: Agree/Thoughts can be genuine questions; publishing context is unknown.",
+      "relatedRules": [
+        "engagement-bait"
+      ],
+      "reason": "Standalone Agree?/Thoughts? lines, optionally followed by a pointing-down emoji; substantive questions and inline uses remain allowed.",
       "probes": [
         {
           "text": "Agree? 👇",
           "origin": "upstream example (outer quotes removed)",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Thoughts? 👇",
+          "origin": "reported regression/boundary",
+          "expectedRelatedRules": [
+            "engagement-bait"
+          ],
+          "baselineMatches": []
+        },
+        {
+          "text": "Do you agree?",
+          "origin": "reported regression/boundary",
+          "expectedRelatedRules": [],
+          "baselineMatches": []
+        },
+        {
+          "text": "Agree? Please explain your reasoning.",
+          "origin": "reported regression/boundary",
           "expectedRelatedRules": [],
           "baselineMatches": []
         }
